@@ -1,0 +1,1758 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PortfolioIQ — VS2 Map & Align</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+* { font-family:'Geist',system-ui,sans-serif; }
+html,body { height:100%; margin:0; overflow:hidden; }
+.shell { display:flex; height:100vh; background:#F9FAFB; }
+.sidebar { width:240px; background:#111827; display:flex; flex-direction:column; flex-shrink:0; overflow-y:auto; }
+.sidebar::-webkit-scrollbar { width:4px; } .sidebar::-webkit-scrollbar-thumb { background:rgba(255,255,255,0.1); border-radius:2px; }
+.logo-name { font-size:16px; font-weight:600; color:#fff; letter-spacing:-0.3px; }
+.logo-tag { font-size:10px; color:rgba(255,255,255,0.35); text-transform:uppercase; letter-spacing:1px; margin-top:2px; }
+.nav-label { font-size:10px; font-weight:600; color:rgba(255,255,255,0.25); text-transform:uppercase; letter-spacing:1px; padding:16px 16px 6px; }
+.nav-item { display:flex; align-items:center; gap:10px; padding:8px 12px; margin:1px 8px; border-radius:8px; cursor:pointer; font-size:13px; color:rgba(255,255,255,0.5); transition:all 0.15s; }
+.nav-item:hover { background:rgba(255,255,255,0.06); color:rgba(255,255,255,0.8); }
+.nav-item.active { background:#1D4ED8; color:#fff; font-weight:500; }
+.l1-item { display:flex; align-items:center; gap:10px; padding:7px 12px; margin:1px 8px; border-radius:8px; cursor:pointer; font-size:12px; color:rgba(255,255,255,0.4); transition:all 0.15s; }
+.l1-item:hover { background:rgba(255,255,255,0.05); color:rgba(255,255,255,0.7); }
+.l1-item.active { color:#93C5FD; font-weight:500; }
+.l1-dot { width:5px; height:5px; border-radius:50%; background:currentColor; flex-shrink:0; margin-left:2px; }
+.n-badge { margin-left:auto; font-size:10px; font-weight:600; background:rgba(255,255,255,0.25); color:#fff; padding:1px 6px; border-radius:10px; }
+.topbar { height:56px; background:#fff; border-bottom:1px solid #E5E7EB; display:flex; align-items:center; padding:0 24px; gap:12px; flex-shrink:0; }
+.t-search { flex:1; max-width:320px; display:flex; align-items:center; gap:8px; background:#F9FAFB; border:1px solid #E5E7EB; border-radius:8px; padding:7px 12px; }
+.t-search:focus-within { border-color:#1D4ED8; box-shadow:0 0 0 3px rgba(29,78,216,0.08); background:#fff; }
+.t-search input { border:none; outline:none; background:transparent; font-size:13px; color:#111827; width:100%; font-family:inherit; }
+.content-area { flex:1; display:flex; flex-direction:column; overflow:hidden; }
+.scroll { flex:1; overflow-y:auto; padding:24px; }
+.scroll::-webkit-scrollbar { width:6px; } .scroll::-webkit-scrollbar-thumb { background:#D1D5DB; border-radius:3px; }
+.card { background:#fff; border:1px solid #E5E7EB; border-radius:12px; padding:20px; }
+.card:hover { box-shadow:0 1px 8px rgba(0,0,0,0.05); }
+.ch { display:flex; align-items:center; justify-content:space-between; margin-bottom:16px; }
+.ct { font-size:14px; font-weight:600; color:#111827; }
+.cs { font-size:12px; color:#6B7280; margin-top:2px; }
+.kpi { background:#fff; border:1px solid #E5E7EB; border-radius:10px; padding:16px; }
+.kl { font-size:11px; font-weight:500; color:#9CA3AF; text-transform:uppercase; letter-spacing:0.5px; margin-bottom:8px; }
+.kv { font-size:28px; font-weight:300; color:#111827; line-height:1; margin-bottom:4px; }
+.kf { font-size:11px; color:#6B7280; }
+.kbar { height:3px; background:#F3F4F6; border-radius:2px; margin-top:8px; }
+.kbar-f { height:100%; border-radius:2px; }
+.badge { display:inline-flex; align-items:center; gap:3px; font-size:11px; font-weight:500; padding:2px 8px; border-radius:20px; white-space:nowrap; }
+.bb { background:#EFF6FF; color:#1D4ED8; }
+.bg { background:#ECFDF5; color:#059669; }
+.ba { background:#FFFBEB; color:#D97706; }
+.br { background:#FEF2F2; color:#DC2626; }
+.bgr { background:#F3F4F6; color:#6B7280; }
+.bp { background:#F5F3FF; color:#7C3AED; }
+.bt { background:#F0FDFA; color:#0D9488; }
+.btn { display:inline-flex; align-items:center; gap:6px; font-size:13px; font-weight:500; padding:7px 14px; border-radius:8px; border:1px solid #E5E7EB; background:#fff; color:#374151; cursor:pointer; transition:all 0.15s; font-family:inherit; white-space:nowrap; }
+.btn:hover { background:#F9FAFB; border-color:#D1D5DB; }
+.btn:active { transform:scale(0.98); }
+.btn-p { background:#1D4ED8; color:#fff; border-color:#1D4ED8; }
+.btn-p:hover { background:#1E40AF; }
+.btn-sm { font-size:12px; padding:5px 10px; }
+.btn-g { color:#059669; border-color:#A7F3D0; } .btn-g:hover { background:#ECFDF5; }
+.btn-d { color:#DC2626; border-color:#FECACA; } .btn-d:hover { background:#FEF2F2; }
+.btn-ghost { border-color:transparent; background:transparent; } .btn-ghost:hover { background:#F3F4F6; }
+.dt { width:100%; border-collapse:collapse; }
+.dt th { font-size:11px; font-weight:600; color:#9CA3AF; text-transform:uppercase; letter-spacing:0.5px; padding:10px 12px; text-align:left; border-bottom:1px solid #F3F4F6; }
+.dt td { padding:11px 12px; border-bottom:1px solid #F9FAFB; vertical-align:middle; font-size:13px; color:#374151; }
+.dt tr:last-child td { border-bottom:none; }
+.dt tbody tr { cursor:pointer; transition:background 0.1s; }
+.dt tbody tr:hover td { background:#F9FAFB; }
+.prog { height:4px; background:#F3F4F6; border-radius:2px; overflow:hidden; }
+.prog-f { height:100%; border-radius:2px; transition:width 0.4s; }
+.hm { width:44px; height:32px; border-radius:6px; display:flex; align-items:center; justify-content:center; font-size:11px; font-weight:600; cursor:pointer; transition:all 0.15s; }
+.hm:hover { transform:scale(1.1); box-shadow:0 2px 8px rgba(0,0,0,0.12); }
+.hm0 { background:#FEF2F2; color:#DC2626; }
+.hm1 { background:#FFFBEB; color:#D97706; }
+.hm2 { background:#ECFDF5; color:#059669; }
+.hm3 { background:#D1FAE5; color:#059669; }
+.panel-ov { position:fixed; inset:0; background:rgba(0,0,0,0.2); z-index:40; opacity:0; pointer-events:none; transition:opacity 0.2s; }
+.panel-ov.open { opacity:1; pointer-events:all; }
+.side-panel { position:fixed; top:0; right:0; width:420px; height:100vh; background:#fff; border-left:1px solid #E5E7EB; z-index:50; transform:translateX(100%); transition:transform 0.25s cubic-bezier(0.4,0,0.2,1); display:flex; flex-direction:column; }
+.side-panel.open { transform:translateX(0); }
+.ph { padding:20px 24px 16px; border-bottom:1px solid #F3F4F6; display:flex; align-items:start; justify-content:space-between; gap:12px; flex-shrink:0; }
+.pt { font-size:15px; font-weight:600; color:#111827; line-height:1.3; }
+.pb { padding:20px 24px; flex:1; overflow-y:auto; }
+.pb::-webkit-scrollbar { width:4px; } .pb::-webkit-scrollbar-thumb { background:#E5E7EB; border-radius:2px; }
+.pf { padding:16px 24px; border-top:1px solid #F3F4F6; display:flex; gap:8px; flex-shrink:0; }
+.xbtn { width:28px; height:28px; border-radius:6px; border:1px solid #E5E7EB; background:transparent; cursor:pointer; display:flex; align-items:center; justify-content:center; color:#9CA3AF; font-size:14px; flex-shrink:0; transition:all 0.15s; }
+.xbtn:hover { background:#F3F4F6; color:#374151; }
+.mo { position:fixed; inset:0; background:rgba(0,0,0,0.4); z-index:60; display:none; align-items:center; justify-content:center; overflow-y:auto; padding:20px; }
+.mo.open { display:flex; }
+.modal { background:#fff; border-radius:16px; width:580px; max-height:90vh; overflow-y:auto; box-shadow:0 20px 60px rgba(0,0,0,0.2); }
+.modal-lg { width:780px; }
+.mh { padding:24px 24px 0; }
+.mb { padding:20px 24px; }
+.mf { padding:16px 24px 24px; display:flex; gap:8px; justify-content:flex-end; border-top:1px solid #F3F4F6; }
+.fl { font-size:12px; font-weight:500; color:#374151; display:block; margin-bottom:5px; }
+.fi { width:100%; padding:8px 12px; border:1px solid #E5E7EB; border-radius:8px; font-size:13px; font-family:inherit; color:#111827; background:#fff; outline:none; transition:all 0.15s; }
+.fi:focus { border-color:#1D4ED8; box-shadow:0 0 0 3px rgba(29,78,216,0.08); }
+.fsel { width:100%; padding:8px 12px; border:1px solid #E5E7EB; border-radius:8px; font-size:13px; font-family:inherit; color:#111827; background:#fff; outline:none; cursor:pointer; }
+.tog { position:relative; width:36px; height:20px; flex-shrink:0; }
+.tog input { opacity:0; width:0; height:0; position:absolute; }
+.tog-t { position:absolute; inset:0; background:#E5E7EB; border-radius:20px; cursor:pointer; transition:0.2s; }
+.tog-t::before { content:''; position:absolute; width:14px; height:14px; left:3px; top:3px; background:#fff; border-radius:50%; transition:0.2s; box-shadow:0 1px 3px rgba(0,0,0,0.15); }
+.tog input:checked~.tog-t { background:#1D4ED8; }
+.tog input:checked~.tog-t::before { transform:translateX(16px); }
+.ai-card { background:linear-gradient(135deg,#EFF6FF 0%,#F5F3FF 100%); border:1px solid #DBEAFE; border-radius:12px; padding:16px; }
+.ai-lbl { font-size:11px; font-weight:600; color:#7C3AED; text-transform:uppercase; letter-spacing:0.6px; margin-bottom:10px; display:flex; align-items:center; gap:6px; }
+.ai-dot { width:6px; height:6px; border-radius:50%; background:#7C3AED; animation:pulse 2s infinite; }
+@keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.4} }
+.cl-card { border:1px solid #E5E7EB; border-radius:10px; padding:14px; cursor:pointer; transition:all 0.15s; background:#fff; }
+.cl-card:hover { border-color:#1D4ED8; box-shadow:0 4px 12px rgba(29,78,216,0.1); }
+.cl-card.validated { border-color:#D97706; }
+.cl-card.suspected { border-style:dashed; }
+.av { width:26px; height:26px; border-radius:50%; background:#EFF6FF; color:#1D4ED8; font-size:10px; font-weight:600; display:flex; align-items:center; justify-content:center; flex-shrink:0; }
+.bam-c { width:48px; height:30px; border-radius:5px; display:inline-flex; align-items:center; justify-content:center; font-size:11px; font-weight:600; cursor:pointer; transition:all 0.15s; }
+.bam-c:hover { filter:brightness(0.9); }
+.bc0 { background:#F9FAFB; color:#D1D5DB; }
+.bc1 { background:#EFF6FF; color:#1D4ED8; }
+.bc2 { background:#ECFDF5; color:#059669; }
+.bc3 { background:#D1FAE5; color:#065F46; }
+.sr { padding:10px 12px; border-radius:8px; cursor:pointer; transition:background 0.1s; border:1px solid transparent; }
+.sr:hover { background:#F9FAFB; border-color:#E5E7EB; }
+.toast { position:fixed; bottom:20px; left:50%; transform:translateX(-50%) translateY(20px); background:#111827; color:#fff; padding:10px 18px; border-radius:10px; font-size:13px; z-index:200; opacity:0; transition:all 0.25s; pointer-events:none; }
+.toast.show { opacity:1; transform:translateX(-50%) translateY(0); }
+.divider { height:1px; background:#F3F4F6; margin:14px 0; }
+.sec-lbl { font-size:11px; font-weight:600; color:#9CA3AF; text-transform:uppercase; letter-spacing:0.5px; margin-bottom:10px; }
+.info-box { background:#F0FDFA; border:1px solid #CCFBF1; border-radius:10px; padding:12px 14px; }
+.warn-box { background:#FFFBEB; border:1px solid #FDE68A; border-radius:10px; padding:12px 14px; }
+.danger-box { background:#FEF2F2; border:1px solid #FECACA; border-radius:10px; padding:12px 14px; }
+.tab-bar { display:flex; gap:2px; border-bottom:1px solid #E5E7EB; margin-bottom:16px; }
+.tab { padding:8px 14px; font-size:13px; font-weight:500; color:#6B7280; cursor:pointer; border-bottom:2px solid transparent; margin-bottom:-1px; transition:all 0.15s; }
+.tab:hover { color:#111827; }
+.tab.active { color:#1D4ED8; border-bottom-color:#1D4ED8; }
+.align-row { display:grid; grid-template-columns:220px 76px 1fr 76px 52px 32px; align-items:center; gap:12px; padding:10px 12px; border-radius:8px; margin-bottom:4px; cursor:pointer; transition:all 0.15s; border:1px solid transparent; }
+.align-row:hover { background:#F8FBFF; border-color:#BFDBFE; }
+.chip { display:inline-flex; align-items:center; justify-content:center; width:32px; height:20px; border-radius:4px; font-size:10px; font-weight:700; }
+</style>
+</head>
+<body>
+<div class="shell">
+
+<!-- SIDEBAR -->
+<nav class="sidebar">
+  <div style="padding:18px 16px 14px;border-bottom:1px solid rgba(255,255,255,0.06);">
+    <div class="logo-name">PortfolioIQ</div>
+    <div class="logo-tag">Application Portfolio Mgmt</div>
+  </div>
+  <div>
+    <div class="nav-label">Value Streams</div>
+    <div class="nav-item" onclick="navToast('VS1','Discover & Inventory')">
+      <svg width="15" height="15" fill="none" viewBox="0 0 16 16"><circle cx="7" cy="7" r="5" stroke="currentColor" stroke-width="1.4"/><path d="M11 11l3 3" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>
+      Discover & Inventory
+    </div>
+    <div class="nav-item active">
+      <svg width="15" height="15" fill="none" viewBox="0 0 16 16"><path stroke="currentColor" stroke-width="1.4" d="M2 4h12M2 8h8M2 12h5"/></svg>
+      Map & Align
+      <span class="n-badge">VS2</span>
+    </div>
+    <div class="nav-item" onclick="navToast('VS3','Costs & TCO')">
+      <svg width="15" height="15" fill="none" viewBox="0 0 16 16"><circle cx="8" cy="8" r="5.5" stroke="currentColor" stroke-width="1.4"/><path stroke="currentColor" stroke-width="1.4" stroke-linecap="round" d="M8 5.5v5M6.5 7h3"/></svg>
+      Costs & TCO
+    </div>
+    <div class="nav-item" onclick="navToast('VS4','Health & Risk')">
+      <svg width="15" height="15" fill="none" viewBox="0 0 16 16"><path stroke="currentColor" stroke-width="1.4" d="M2 8h2.5l2-4 2 8 2-4H14"/></svg>
+      Health & Risk
+    </div>
+    <div class="nav-item" onclick="navToast('VS5','Intelligence')">
+      <svg width="15" height="15" fill="none" viewBox="0 0 16 16"><path stroke="currentColor" stroke-width="1.4" d="M2 12l4-4 3 3 5-7"/></svg>
+      Intelligence
+    </div>
+    <div class="nav-item" onclick="navToast('VS6','Rationalize')">
+      <svg width="15" height="15" fill="none" viewBox="0 0 16 16"><rect x="2" y="2" width="5" height="5" rx="1.5" stroke="currentColor" stroke-width="1.4"/><rect x="9" y="2" width="5" height="5" rx="1.5" stroke="currentColor" stroke-width="1.4"/><rect x="2" y="9" width="5" height="5" rx="1.5" stroke="currentColor" stroke-width="1.4"/><rect x="9" y="9" width="5" height="5" rx="1.5" stroke="currentColor" stroke-width="1.4"/></svg>
+      Rationalize
+    </div>
+    <div class="nav-item" onclick="navToast('VS7','Renewals')">
+      <svg width="15" height="15" fill="none" viewBox="0 0 16 16"><rect x="2" y="3" width="12" height="10" rx="1.5" stroke="currentColor" stroke-width="1.4"/><path stroke="currentColor" stroke-width="1.4" d="M2 6h12"/></svg>
+      Renewals
+    </div>
+    <div class="nav-item" onclick="navToast('VS8','Transform')">
+      <svg width="15" height="15" fill="none" viewBox="0 0 16 16"><path stroke="currentColor" stroke-width="1.4" d="M8 2v12M4 6l4-4 4 4"/></svg>
+      Transform
+    </div>
+    <div class="nav-item" onclick="navToast('VS9','Govern & Report')">
+      <svg width="15" height="15" fill="none" viewBox="0 0 16 16"><path stroke="currentColor" stroke-width="1.4" d="M8 2L3 5v4c0 2.8 2.2 4.6 5 5 2.8-.4 5-2.2 5-5V5L8 2z"/></svg>
+      Govern & Report
+    </div>
+  </div>
+  <div style="margin-top:8px;">
+    <div class="nav-label">VS2 — L1 Groups</div>
+    <div class="l1-item" id="nl05" onclick="switchL1('05')"><div class="l1-dot"></div>Capability Model & Mapping</div>
+    <div class="l1-item" id="nl06" onclick="switchL1('06')"><div class="l1-dot"></div>Gaps & Redundancy</div>
+    <div class="l1-item" id="nl07" onclick="switchL1('07')"><div class="l1-dot"></div>Ownership</div>
+    <div class="l1-item" id="nl08" onclick="switchL1('08')"><div class="l1-dot"></div>Navigate & Visualize</div>
+    <div class="l1-item" id="nl09" onclick="switchL1('09')"><div class="l1-dot"></div>Strategic Alignment</div>
+  </div>
+  <div style="margin-top:auto;padding:14px 12px;border-top:1px solid rgba(255,255,255,0.06);">
+    <div style="display:flex;align-items:center;gap:10px;cursor:pointer;" onclick="openPanel('Your Profile','Portfolio Lead — Acme Corp',profileBody(),'')">
+      <div class="av" style="background:#312E81;color:#A5B4FC;width:30px;height:30px;font-size:11px;">AD</div>
+      <div>
+        <div style="font-size:12px;font-weight:500;color:rgba(255,255,255,0.7);">Alex Director</div>
+        <div style="font-size:10px;color:rgba(255,255,255,0.3);">Portfolio Lead</div>
+      </div>
+    </div>
+  </div>
+</nav>
+
+<!-- MAIN -->
+<div class="content-area">
+  <div class="topbar">
+    <span style="font-size:13px;color:#9CA3AF;">VS2</span>
+    <span style="color:#D1D5DB;">/</span>
+    <span style="font-size:13px;font-weight:500;color:#111827;" id="topbar-title">Map & Align</span>
+    <div class="t-search" style="margin-left:16px;">
+      <svg width="14" height="14" fill="none" viewBox="0 0 16 16"><circle cx="7" cy="7" r="4.5" stroke="#9CA3AF" stroke-width="1.5"/><path d="M10.5 10.5l3 3" stroke="#9CA3AF" stroke-width="1.5" stroke-linecap="round"/></svg>
+      <input type="text" id="global-search" placeholder="Search apps, capabilities, owners..." oninput="doSearch(this.value)" onclick="if(currentL1!=='08'){switchL1('08');setTimeout(()=>{document.getElementById('global-search').focus();document.getElementById('local-search').value=this.value;doSearch(this.value);},50)}">
+    </div>
+    <div style="margin-left:auto;display:flex;align-items:center;gap:8px;">
+      <button class="btn btn-sm" onclick="openModal('model-modal')">
+        <svg width="13" height="13" fill="none" viewBox="0 0 16 16"><path stroke="currentColor" stroke-width="1.5" d="M8 2v12M2 8h12"/></svg>
+        Configure Model
+      </button>
+      <button class="btn btn-sm btn-p" onclick="openExportModal()">
+        <svg width="13" height="13" fill="none" viewBox="0 0 16 16"><path stroke="currentColor" stroke-width="1.5" d="M8 2v8M5 7l3 3 3-3M3 13h10"/></svg>
+        Export Report
+      </button>
+    </div>
+  </div>
+  <div class="scroll" id="page"></div>
+</div>
+</div>
+
+<!-- PANEL OVERLAY -->
+<div class="panel-ov" id="pov" onclick="closePanel()"></div>
+<div class="side-panel" id="sp">
+  <div class="ph">
+    <div><div class="pt" id="sp-title">Detail</div><div style="font-size:12px;color:#6B7280;margin-top:2px;" id="sp-sub"></div></div>
+    <button class="xbtn" onclick="closePanel()">✕</button>
+  </div>
+  <div class="pb" id="sp-body"></div>
+  <div class="pf" id="sp-foot"></div>
+</div>
+
+<!-- ─── MODALS ─── -->
+
+<!-- Configure Model -->
+<div class="mo" id="model-modal" onclick="if(event.target===this)closeModal('model-modal')">
+  <div class="modal">
+    <div class="mh">
+      <div style="font-size:16px;font-weight:600;color:#111827;">Configure Reference Model</div>
+      <div style="font-size:13px;color:#6B7280;margin-top:4px;margin-bottom:20px;">Choose and customise your business capability taxonomy</div>
+    </div>
+    <div class="mb" style="padding-top:0;">
+      <div style="margin-bottom:14px;"><label class="fl">Reference Model Source</label>
+        <select class="fsel" id="model-src" onchange="updateModelPreview()">
+          <option value="banking">Info-Tech — Banking & Financial Services (128 caps)</option>
+          <option value="healthcare">Info-Tech — Healthcare (114 caps)</option>
+          <option value="manufacturing">Info-Tech — Manufacturing (109 caps)</option>
+          <option value="togaf">TOGAF — Generic Enterprise (156 caps)</option>
+          <option value="custom">Upload custom model…</option>
+        </select>
+      </div>
+      <div style="margin-bottom:14px;"><label class="fl">Hierarchy Depth</label>
+        <select class="fsel" id="model-depth" onchange="updateModelPreview()">
+          <option value="2">L1 → L2 (2 levels)</option>
+          <option value="3" selected>L1 → L2 → L3 (3 levels)</option>
+          <option value="4">L1 → L2 → L3 → L4 (4 levels)</option>
+        </select>
+      </div>
+      <div style="margin-bottom:14px;"><label class="fl">Oversubscription Threshold</label>
+        <div style="display:flex;align-items:center;gap:10px;">
+          <input type="range" min="2" max="8" value="4" style="flex:1;" id="thresh-sl" oninput="document.getElementById('thresh-v').textContent=this.value+' apps'">
+          <span style="font-size:13px;font-weight:600;color:#1D4ED8;min-width:50px;" id="thresh-v">4 apps</span>
+        </div>
+      </div>
+      <div class="info-box" id="model-preview-box">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;">
+          <div style="font-size:12px;font-weight:600;color:#0D9488;" id="mprev-title">Info-Tech Banking Model</div>
+          <button class="btn btn-sm" style="color:#0D9488;border-color:#99F6E4;" onclick="openModelFullPreview()">Preview full model →</button>
+        </div>
+        <div style="font-size:12px;color:#374151;" id="mprev-stats">128 capabilities · 12 L1 domains · 42 L2 groups · 3 levels</div>
+        <div style="margin-top:10px;" id="mprev-tree">
+          <div id="mprev-domains"></div>
+        </div>
+      </div>
+    </div>
+    <div class="mf">
+      <button class="btn" onclick="closeModal('model-modal')">Cancel</button>
+      <button class="btn btn-p" onclick="activateModel()">Activate Model</button>
+    </div>
+  </div>
+</div>
+
+<!-- Full Model Preview -->
+<div class="mo" id="model-full-modal" onclick="if(event.target===this)closeModal('model-full-modal')">
+  <div class="modal modal-lg">
+    <div class="mh" style="display:flex;align-items:start;justify-content:space-between;">
+      <div>
+        <div style="font-size:16px;font-weight:600;color:#111827;" id="full-model-title">Info-Tech Banking Model — Full Hierarchy</div>
+        <div style="font-size:13px;color:#6B7280;margin-top:4px;" id="full-model-stats">128 capabilities · 12 L1 domains · 42 L2 groups</div>
+      </div>
+      <button class="xbtn" onclick="closeModal('model-full-modal')">✕</button>
+    </div>
+    <div class="mb">
+      <div style="display:flex;gap:8px;margin-bottom:14px;flex-wrap:wrap;">
+        <input class="fi" style="flex:1;min-width:200px;" placeholder="Search capabilities..." id="cap-search" oninput="filterModelCaps(this.value)">
+        <select class="fsel" style="width:auto;" onchange="filterModelDomain(this.value)" id="domain-filter">
+          <option value="">All domains</option>
+        </select>
+      </div>
+      <div style="max-height:440px;overflow-y:auto;" id="full-model-body"></div>
+    </div>
+    <div class="mf">
+      <button class="btn" onclick="closeModal('model-full-modal')">Close preview</button>
+      <button class="btn btn-p" onclick="closeModal('model-full-modal');activateModel()">Activate this model</button>
+    </div>
+  </div>
+</div>
+
+<!-- Export Report -->
+<div class="mo" id="export-modal" onclick="if(event.target===this)closeModal('export-modal')">
+  <div class="modal">
+    <div class="mh">
+      <div style="font-size:16px;font-weight:600;color:#111827;">Export Capability Report</div>
+      <div style="font-size:13px;color:#6B7280;margin-top:4px;margin-bottom:20px;">Configure and generate a capability mapping and alignment report</div>
+    </div>
+    <div class="mb" style="padding-top:0;">
+      <div style="margin-bottom:14px;"><label class="fl">Report Format</label>
+        <select class="fsel" id="exp-format"><option>PDF — Executive Summary</option><option>Excel — Full Data Export</option><option>PowerPoint — Board Presentation</option><option>CSV — Raw Capability Data</option></select>
+      </div>
+      <div style="margin-bottom:14px;"><label class="fl">Include Sections</label>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:4px;">
+          ${['Capability Coverage Heatmap','Gap & Redundancy Analysis','Ownership Register','Strategic Alignment','Application Mapping Table','AI Narrative Summary'].map(s=>`
+          <label style="display:flex;align-items:center;gap:8px;font-size:13px;cursor:pointer;padding:8px;border:1px solid #E5E7EB;border-radius:8px;">
+            <input type="checkbox" checked style="accent-color:#1D4ED8;"> ${s}
+          </label>`).join('')}
+        </div>
+      </div>
+      <div style="margin-bottom:14px;"><label class="fl">Date Range</label>
+        <select class="fsel"><option>Current quarter (Q1 2025)</option><option>Last 12 months</option><option>Year to date</option><option>Custom range…</option></select>
+      </div>
+      <div class="info-box">
+        <div style="font-size:12px;font-weight:600;color:#0D9488;margin-bottom:2px;">Estimated report size</div>
+        <div style="font-size:12px;color:#374151;">~24 pages · 148 applications · 128 capabilities · includes AI narrative</div>
+      </div>
+    </div>
+    <div class="mf">
+      <button class="btn" onclick="closeModal('export-modal')">Cancel</button>
+      <button class="btn btn-p" onclick="runExport()">
+        <svg width="13" height="13" fill="none" viewBox="0 0 16 16"><path stroke="currentColor" stroke-width="1.5" d="M8 2v8M5 7l3 3 3-3M3 13h10"/></svg>
+        Generate Report
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- Transfer Ownership -->
+<div class="mo" id="transfer-modal" onclick="if(event.target===this)closeModal('transfer-modal')">
+  <div class="modal">
+    <div class="mh">
+      <div style="font-size:16px;font-weight:600;color:#111827;">Transfer Ownership</div>
+      <div style="font-size:13px;color:#6B7280;margin-top:4px;margin-bottom:16px;">Reassign application ownership with a structured handoff</div>
+    </div>
+    <div class="mb" style="padding-top:0;">
+      <div style="background:#F9FAFB;border:1px solid #E5E7EB;border-radius:8px;padding:12px;margin-bottom:16px;">
+        <div style="font-size:11px;color:#9CA3AF;margin-bottom:2px;">Application</div>
+        <div style="font-size:14px;font-weight:600;color:#111827;" id="t-app">Salesforce CRM</div>
+      </div>
+      <div style="margin-bottom:14px;"><label class="fl">New Business Owner</label>
+        <input class="fi" type="text" id="t-new-owner" placeholder="Type name or email...">
+        <div style="display:flex;flex-wrap:wrap;gap:6px;margin-top:6px;" id="t-suggestions">
+          ${['Sarah Chen','Marcus Webb','Priya Nair','James Park'].map(n=>`<button class="btn btn-sm" onclick="document.getElementById('t-new-owner').value='${n}';this.parentElement.querySelectorAll('.btn').forEach(b=>b.style.background='');this.style.background='#EFF6FF';">${n}</button>`).join('')}
+        </div>
+      </div>
+      <div style="margin-bottom:14px;"><label class="fl">Transfer Rationale</label>
+        <textarea class="fi" rows="2" placeholder="Why is ownership being transferred?"></textarea>
+      </div>
+      <label style="display:flex;align-items:center;gap:10px;padding:10px;background:#F9FAFB;border-radius:8px;cursor:pointer;">
+        <div class="tog"><input type="checkbox" checked><div class="tog-t"></div></div>
+        <div><div style="font-size:13px;font-weight:500;">Notify incoming owner</div><div style="font-size:11px;color:#6B7280;">Email sent with handoff instructions</div></div>
+      </label>
+    </div>
+    <div class="mf">
+      <button class="btn" onclick="closeModal('transfer-modal')">Cancel</button>
+      <button class="btn btn-p" onclick="confirmTransfer()">Confirm Transfer</button>
+    </div>
+  </div>
+</div>
+
+<!-- Application Score Detail -->
+<div class="mo" id="score-modal" onclick="if(event.target===this)closeModal('score-modal')">
+  <div class="modal">
+    <div class="mh" style="display:flex;align-items:start;justify-content:space-between;">
+      <div><div style="font-size:16px;font-weight:600;color:#111827;" id="score-app-name">Salesforce CRM</div>
+        <div style="font-size:13px;color:#6B7280;margin-top:2px;">Business Value Score Breakdown</div>
+      </div>
+      <button class="xbtn" onclick="closeModal('score-modal')">✕</button>
+    </div>
+    <div class="mb" id="score-modal-body"></div>
+    <div class="mf">
+      <button class="btn" onclick="closeModal('score-modal')">Close</button>
+      <button class="btn btn-p" onclick="closeModal('score-modal');toast('Application flagged for rationalization review')">Flag for Review</button>
+    </div>
+  </div>
+</div>
+
+<!-- Viewpoint Preview -->
+<div class="mo" id="viewpoint-modal" onclick="if(event.target===this)closeModal('viewpoint-modal')">
+  <div class="modal modal-lg">
+    <div class="mh" style="display:flex;align-items:start;justify-content:space-between;">
+      <div><div style="font-size:16px;font-weight:600;color:#111827;" id="vp-title">Architecture Viewpoint</div>
+        <div style="font-size:13px;color:#6B7280;margin-top:2px;" id="vp-sub"></div>
+      </div>
+      <button class="xbtn" onclick="closeModal('viewpoint-modal')">✕</button>
+    </div>
+    <div class="mb" id="vp-body"></div>
+    <div class="mf">
+      <button class="btn" onclick="closeModal('viewpoint-modal')">Close</button>
+      <button class="btn btn-p" onclick="closeModal('viewpoint-modal');toast('Viewpoint exported as PDF')">Export PDF</button>
+    </div>
+  </div>
+</div>
+
+<!-- BAM Cell Detail -->
+<div class="mo" id="bam-modal" onclick="if(event.target===this)closeModal('bam-modal')">
+  <div class="modal">
+    <div class="mh" style="display:flex;align-items:start;justify-content:space-between;">
+      <div><div style="font-size:16px;font-weight:600;color:#111827;" id="bam-title">CRM × Sales & Mktg</div>
+        <div style="font-size:13px;color:#6B7280;margin-top:2px;">Applications at this intersection</div>
+      </div>
+      <button class="xbtn" onclick="closeModal('bam-modal')">✕</button>
+    </div>
+    <div class="mb" id="bam-body"></div>
+    <div class="mf"><button class="btn btn-p" onclick="closeModal('bam-modal')">Close</button></div>
+  </div>
+</div>
+
+<!-- OKR Mapping Editor -->
+<div class="mo" id="okr-modal" onclick="if(event.target===this)closeModal('okr-modal')">
+  <div class="modal">
+    <div class="mh">
+      <div style="font-size:16px;font-weight:600;color:#111827;">Map Application to Strategic Objective</div>
+      <div style="font-size:13px;color:#6B7280;margin-top:4px;margin-bottom:16px;">Link an application to one or more strategic objectives or OKRs</div>
+    </div>
+    <div class="mb" style="padding-top:0;">
+      <div style="margin-bottom:14px;"><label class="fl">Application</label>
+        <select class="fsel" id="okr-app">
+          ${['Salesforce CRM','ServiceNow ITSM','SAP FI','Workday HCM','Tableau','Marketo','HubSpot','Datadog','Dynatrace','Looker'].map(a=>`<option>${a}</option>`).join('')}
+        </select>
+      </div>
+      <div style="margin-bottom:14px;"><label class="fl">Strategic Objectives (select all that apply)</label>
+        <div style="display:flex;flex-direction:column;gap:6px;margin-top:4px;" id="okr-objectives">
+          ${['Digital Customer Experience','Operational Excellence','Data-Driven Decisions','Talent Transformation','Financial Optimization','Supply Chain Resilience'].map((o,i)=>`
+          <label style="display:flex;align-items:center;gap:8px;font-size:13px;cursor:pointer;padding:8px 10px;border:1px solid #E5E7EB;border-radius:8px;">
+            <input type="checkbox" ${i<2?'checked':''} style="accent-color:#1D4ED8;"> ${o}
+          </label>`).join('')}
+        </div>
+      </div>
+      <div style="margin-bottom:0;"><label class="fl">Contribution Level</label>
+        <select class="fsel"><option>Primary — core to this objective</option><option>Secondary — supports this objective</option><option>Incidental — minor contribution</option></select>
+      </div>
+    </div>
+    <div class="mf">
+      <button class="btn" onclick="closeModal('okr-modal')">Cancel</button>
+      <button class="btn btn-p" onclick="saveOKRMapping()">Save Mapping</button>
+    </div>
+  </div>
+</div>
+
+<!-- Investment Plan -->
+<div class="mo" id="invest-modal" onclick="if(event.target===this)closeModal('invest-modal')">
+  <div class="modal">
+    <div class="mh">
+      <div style="font-size:16px;font-weight:600;color:#111827;">Plan Investment for Strategic Gaps</div>
+      <div style="font-size:13px;color:#6B7280;margin-top:4px;margin-bottom:16px;">7 high-priority capabilities have no application coverage</div>
+    </div>
+    <div class="mb" style="padding-top:0;">
+      ${[
+        {cap:'Treasury Management',priority:'High',note:'Cash forecasting and hedging',budget:'$240K',timeline:'Q2 2025'},
+        {cap:'Master Data Management',priority:'High',note:'Data quality foundation',budget:'$380K',timeline:'Q3 2025'},
+        {cap:'Learning & Development',priority:'Medium',note:'L&D programme tooling',budget:'$90K',timeline:'Q4 2025'},
+      ].map(g=>`
+      <div style="padding:12px;border:1px solid #E5E7EB;border-radius:10px;margin-bottom:8px;">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;">
+          <div style="font-size:13px;font-weight:500;">${g.cap}</div>
+          <span class="badge ${g.priority==='High'?'br':'ba'}">${g.priority} priority</span>
+        </div>
+        <div style="font-size:12px;color:#6B7280;margin-bottom:10px;">${g.note}</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
+          <div><label class="fl" style="font-size:10px;">Budget estimate</label>
+            <input class="fi" value="${g.budget}" style="font-size:12px;padding:6px 8px;"></div>
+          <div><label class="fl" style="font-size:10px;">Target quarter</label>
+            <select class="fsel" style="font-size:12px;padding:6px 8px;"><option>${g.timeline}</option><option>Q1 2025</option><option>Q2 2025</option><option>Q3 2025</option><option>Q4 2025</option></select></div>
+        </div>
+      </div>`).join('')}
+    </div>
+    <div class="mf">
+      <button class="btn" onclick="closeModal('invest-modal')">Cancel</button>
+      <button class="btn btn-p" onclick="closeModal('invest-modal');toast('Investment plan saved — 3 gaps added to action register')">Save to Action Register</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast-el"></div>
+
+<script>
+// ─── DATA ─────────────────────────────────────────────────────────────────
+const CAPS = [
+  {id:'c1',name:'Customer Relationship Mgmt',l1:'Customer Engagement',apps:['Salesforce CRM','HubSpot','Zoho'],n:3,priority:'High'},
+  {id:'c2',name:'Sales Pipeline Management',l1:'Customer Engagement',apps:['Salesforce CRM'],n:1,priority:'High'},
+  {id:'c3',name:'Marketing Campaign Mgmt',l1:'Customer Engagement',apps:['Marketo','HubSpot'],n:2,priority:'Medium'},
+  {id:'c4',name:'Customer Service & Support',l1:'Customer Engagement',apps:['ServiceNow','Zendesk','Salesforce Svc'],n:3,priority:'High'},
+  {id:'c5',name:'Financial Reporting & Analysis',l1:'Finance',apps:['SAP FI','Anaplan'],n:2,priority:'High'},
+  {id:'c6',name:'Accounts Payable / Receivable',l1:'Finance',apps:['SAP FI'],n:1,priority:'Medium'},
+  {id:'c7',name:'Treasury Management',l1:'Finance',apps:[],n:0,priority:'High'},
+  {id:'c8',name:'Procurement & Sourcing',l1:'Supply Chain',apps:['SAP Ariba','Coupa'],n:2,priority:'Medium'},
+  {id:'c9',name:'Inventory Management',l1:'Supply Chain',apps:['SAP EWM'],n:1,priority:'Low'},
+  {id:'c10',name:'Logistics & Fulfilment',l1:'Supply Chain',apps:['Oracle TMS','Manhattan WMS'],n:2,priority:'Medium'},
+  {id:'c11',name:'HR Core & People Mgmt',l1:'Human Resources',apps:['Workday HCM','BambooHR'],n:2,priority:'Medium'},
+  {id:'c12',name:'Talent Acquisition',l1:'Human Resources',apps:['Greenhouse','LinkedIn Recruiter','Workday'],n:3,priority:'Low'},
+  {id:'c13',name:'Learning & Development',l1:'Human Resources',apps:[],n:0,priority:'Medium'},
+  {id:'c14',name:'IT Service Management',l1:'IT Operations',apps:['ServiceNow ITSM','Jira Service'],n:2,priority:'High'},
+  {id:'c15',name:'Application Lifecycle Mgmt',l1:'IT Operations',apps:['Jira','Azure DevOps'],n:2,priority:'High'},
+  {id:'c16',name:'Infrastructure Monitoring',l1:'IT Operations',apps:['Datadog','Dynatrace','Splunk','New Relic'],n:4,priority:'High'},
+  {id:'c17',name:'Data Analytics & BI',l1:'Data & Analytics',apps:['Tableau','Power BI','Looker'],n:3,priority:'High'},
+  {id:'c18',name:'Data Integration & ETL',l1:'Data & Analytics',apps:['Informatica','Talend'],n:2,priority:'Medium'},
+  {id:'c19',name:'Master Data Management',l1:'Data & Analytics',apps:[],n:0,priority:'High'},
+  {id:'c20',name:'Risk & Compliance',l1:'Governance',apps:['MetricStream','Archer'],n:2,priority:'High'},
+  {id:'c21',name:'Document Management',l1:'Governance',apps:['SharePoint','OpenText','Box','Documentum'],n:4,priority:'Low'},
+  {id:'c22',name:'Workflow & Approvals',l1:'Governance',apps:['ServiceNow','Power Automate'],n:2,priority:'Medium'},
+];
+
+const APPS = [
+  {name:'Salesforce CRM',bu:'Sales & Marketing',owner:'James Park',support:'CRM Team',crit:'Critical',caps:['Customer Relationship Mgmt','Sales Pipeline Management'],score:92,scoreBreakdown:{align:88,crit:95,sat:91,health:94}},
+  {name:'ServiceNow ITSM',bu:'IT Operations',owner:'Maria Santos',support:'ITSM Team',crit:'Critical',caps:['IT Service Management','Customer Service & Support'],score:89,scoreBreakdown:{align:90,crit:96,sat:84,health:88}},
+  {name:'SAP FI',bu:'Finance',owner:'Robert Chen',support:'ERP Team',crit:'Critical',caps:['Financial Reporting & Analysis','Accounts Payable / Receivable'],score:85,scoreBreakdown:{align:82,crit:94,sat:76,health:90}},
+  {name:'Workday HCM',bu:'Human Resources',owner:'Lisa Torres',support:'HR Systems',crit:'High',caps:['HR Core & People Mgmt'],score:78,scoreBreakdown:{align:80,crit:82,sat:77,health:74}},
+  {name:'Tableau',bu:'Enterprise Data',owner:'David Kim',support:'BI Team',crit:'High',caps:['Data Analytics & BI'],score:71,scoreBreakdown:{align:74,crit:75,sat:70,health:68}},
+  {name:'Marketo',bu:'Marketing',owner:'',support:'Marketing Ops',crit:'Medium',caps:['Marketing Campaign Mgmt'],score:55,scoreBreakdown:{align:58,crit:55,sat:54,health:52}},
+  {name:'HubSpot',bu:'Sales',owner:'',support:'',crit:'Medium',caps:['Customer Relationship Mgmt','Marketing Campaign Mgmt'],score:61,scoreBreakdown:{align:60,crit:58,sat:68,health:60}},
+  {name:'Datadog',bu:'Platform Eng',owner:'Amir Hassan',support:'SRE Team',crit:'High',caps:['Infrastructure Monitoring'],score:74,scoreBreakdown:{align:76,crit:80,sat:72,health:70}},
+  {name:'Dynatrace',bu:'Platform Eng',owner:'Amir Hassan',support:'SRE Team',crit:'High',caps:['Infrastructure Monitoring'],score:72,scoreBreakdown:{align:70,crit:78,sat:68,health:73}},
+  {name:'Greenhouse',bu:'Talent',owner:'Emma Wilson',support:'HR Systems',crit:'Low',caps:['Talent Acquisition'],score:48,scoreBreakdown:{align:45,crit:42,sat:54,health:50}},
+  {name:'Zendesk',bu:'Customer Success',owner:'',support:'',crit:'Medium',caps:['Customer Service & Support'],score:58,scoreBreakdown:{align:56,crit:60,sat:64,health:52}},
+  {name:'Power BI',bu:'Enterprise Data',owner:'David Kim',support:'BI Team',crit:'Medium',caps:['Data Analytics & BI'],score:68,scoreBreakdown:{align:65,crit:68,sat:72,health:66}},
+  {name:'Looker',bu:'Product Analytics',owner:'',support:'Data Eng',crit:'Medium',caps:['Data Analytics & BI'],score:62,scoreBreakdown:{align:60,crit:62,sat:66,health:60}},
+  {name:'SharePoint',bu:'Corporate IT',owner:'Carlos Ruiz',support:'M365 Team',crit:'High',caps:['Document Management'],score:66,scoreBreakdown:{align:40,crit:72,sat:74,health:80}},
+  {name:'Informatica',bu:'Data Platform',owner:'Priya Nair',support:'Data Eng',crit:'High',caps:['Data Integration & ETL'],score:69,scoreBreakdown:{align:72,crit:74,sat:62,health:68}},
+  {name:'OpenText',bu:'Legal',owner:'',support:'',crit:'Low',caps:['Document Management'],score:34,scoreBreakdown:{align:20,crit:38,sat:42,health:37}},
+  {name:'Documentum',bu:'Legal',owner:'',support:'',crit:'Low',caps:['Document Management'],score:28,scoreBreakdown:{align:15,crit:32,sat:36,health:30}},
+];
+
+const CLUSTERS = [
+  {id:'r1',cap:'Customer Relationship Mgmt',apps:['Salesforce CRM','HubSpot','Zoho'],overlap:'87%',cost:'$2.4M/yr',status:'validated',saving:'$820K'},
+  {id:'r2',cap:'Data Analytics & BI',apps:['Tableau','Power BI','Looker'],overlap:'71%',cost:'$890K/yr',status:'validated',saving:'$310K'},
+  {id:'r3',cap:'Infrastructure Monitoring',apps:['Datadog','Dynatrace','Splunk','New Relic'],overlap:'65%',cost:'$1.1M/yr',status:'suspected',saving:'$410K'},
+  {id:'r4',cap:'Document Management',apps:['SharePoint','OpenText','Box','Documentum'],overlap:'58%',cost:'$640K/yr',status:'suspected',saving:'$220K'},
+  {id:'r5',cap:'Customer Service & Support',apps:['ServiceNow','Zendesk'],overlap:'44%',cost:'$310K/yr',status:'suspected',saving:'$90K'},
+  {id:'r6',cap:'Talent Acquisition',apps:['Greenhouse','LinkedIn Recruiter','Workday'],overlap:'52%',cost:'$275K/yr',status:'validated',saving:'$95K'},
+];
+
+const OBJECTIVES = [
+  {name:'Digital Customer Experience',priority:'High',aligned:8,gap:1,spend:'$3.2M'},
+  {name:'Operational Excellence',priority:'High',aligned:6,gap:1,spend:'$2.8M'},
+  {name:'Data-Driven Decisions',priority:'High',aligned:5,gap:3,spend:'$1.4M'},
+  {name:'Talent Transformation',priority:'Medium',aligned:3,gap:2,spend:'$940K'},
+  {name:'Financial Optimization',priority:'Medium',aligned:2,gap:1,spend:'$2.1M'},
+  {name:'Supply Chain Resilience',priority:'Low',aligned:4,gap:0,spend:'$1.8M'},
+];
+
+const MODEL_DATA = {
+  banking: {
+    title:'Info-Tech Banking Model',stats:'128 capabilities · 12 L1 domains · 42 L2 groups',
+    domains:[
+      {name:'Customer & Channel Management',n:14,caps:['Customer Relationship Mgmt','Digital Banking','Branch Operations','Contact Centre','Customer Analytics','Product Catalogue Mgmt','Customer Onboarding','KYC & AML','Complaints Management','Customer Satisfaction','Sales Pipeline','Marketing Campaigns','Loyalty & Retention','Omnichannel Delivery']},
+      {name:'Lending & Credit',n:11,caps:['Loan Origination','Credit Underwriting','Portfolio Management','Collections & Recovery','Mortgage Processing','Trade Finance','Syndicated Lending','Credit Risk Modelling','Covenant Monitoring','Asset Finance','Green Lending']},
+      {name:'Payments & Treasury',n:10,caps:['Payments Processing','Treasury Management','Cash Management','Liquidity Management','FX & Hedging','Nostro Reconciliation','SWIFT Connectivity','Real-time Payments','Card Issuing','Correspondent Banking']},
+      {name:'Risk & Compliance',n:9,caps:['Credit Risk','Market Risk','Operational Risk','Regulatory Reporting','AML & Fraud','Stress Testing','Model Risk','Data Privacy','Conduct Risk']},
+      {name:'Finance & Accounting',n:8,caps:['Financial Reporting','GL & Ledger','Cost Allocation','Budgeting & Forecasting','Tax Management','Accounts Payable','Accounts Receivable','Transfer Pricing']},
+      {name:'HR & Talent',n:8,caps:['HR Core','Talent Acquisition','Learning & Development','Performance Management','Compensation','Workforce Planning','Employee Experience','HR Analytics']},
+      {name:'IT Operations',n:10,caps:['IT Service Management','Infrastructure Monitoring','Application Lifecycle Mgmt','Capacity Planning','Change Management','Incident Management','Problem Management','Asset Management','DevSecOps','Cloud Operations']},
+      {name:'Data & Analytics',n:9,caps:['Data Analytics & BI','Master Data Management','Data Integration & ETL','Data Governance','Data Quality','AI & ML Platform','Real-time Analytics','Data Marketplace','Regulatory Data']},
+      {name:'Enterprise Architecture',n:7,caps:['Architecture Governance','Solution Design','Technology Standards','Application Portfolio Mgmt','Enterprise Integration','API Management','Cloud Strategy']},
+      {name:'Supply Chain & Procurement',n:8,caps:['Procurement & Sourcing','Vendor Management','Contract Management','Inventory Management','Logistics','Facilities Management','Business Continuity','Third-party Risk']},
+      {name:'Governance & Legal',n:7,caps:['Document Management','Workflow & Approvals','Risk & Compliance','Board Governance','Legal Entity Mgmt','Intellectual Property','Regulatory Liaison']},
+      {name:'Customer Innovation',n:7,caps:['Open Banking','Embedded Finance','Digital Wallet','Crypto & DeFi','ESG Reporting','Innovation Lab','Ecosystem Partnerships']},
+    ]
+  },
+  healthcare:{title:'Info-Tech Healthcare Model',stats:'114 capabilities · 10 L1 domains · 38 L2 groups',
+    domains:[
+      {name:'Patient Engagement',n:12,caps:['Patient Portal','Appointment Scheduling','Telehealth','Patient Education','Care Coordination','Patient Satisfaction','Consent Management','Community Health','Remote Monitoring','Patient Communication','Wayfinding','Visitor Management']},
+      {name:'Clinical Operations',n:14,caps:['EHR / EMR','Clinical Decision Support','Order Entry','Medication Management','Lab Information System','Radiology PACS','Surgical Planning','Clinical Documentation','Care Plans','Discharge Planning','Infection Control','Clinical Analytics','Nursing Management','Quality & Safety']},
+      {name:'Revenue Cycle',n:10,caps:['Patient Registration','Insurance Eligibility','Coding & Billing','Claims Management','Denial Management','Patient Collections','Contract Management','Revenue Analytics','Charge Capture','Prior Authorisation']},
+    ]
+  },
+  manufacturing:{title:'Info-Tech Manufacturing Model',stats:'109 capabilities · 9 L1 domains · 35 L2 groups',
+    domains:[
+      {name:'Product Design & Engineering',n:12,caps:['CAD / PLM','Bill of Materials','Design for Manufacture','Change Control','Compliance Testing','Digital Twin','Simulation','Regulatory Submission','Product Portfolio Mgmt','IP Management','Supplier Co-design','Configuration Mgmt']},
+      {name:'Manufacturing Operations',n:15,caps:['Production Planning','MES / SCADA','Quality Management','OEE Monitoring','Work Instructions','Tooling Management','Maintenance','Environmental Mgmt','Energy Management','Safety Management','Shop Floor Control','Material Handling','Batch Management','Lean / Six Sigma','Factory Analytics']},
+    ]
+  },
+  togaf:{title:'TOGAF Generic Enterprise Model',stats:'156 capabilities · 14 L1 domains · 52 L2 groups',
+    domains:[
+      {name:'Business Architecture',n:10,caps:['Business Capability Modelling','Value Stream Mapping','Organisation Design','Business Motivation Model','Process Architecture','Information Architecture','Performance Management','Stakeholder Management','Change Management','Business Case Development']},
+      {name:'Application Architecture',n:12,caps:['Application Portfolio Management','Application Integration','API Management','Microservices Architecture','Legacy Modernisation','SaaS Management','Application Security','DevOps Platform','Application Performance','Data Architecture','Event-driven Architecture','Application Lifecycle']},
+    ]
+  },
+};
+
+const WEIGHTS = {w1:35,w2:25,w3:20,w4:20};
+const CIRC = 2*Math.PI*38;
+let currentL1='05', unmappedFilter=false, ownerGapFilter=false;
+
+// ─── UTILS ────────────────────────────────────────────────────────────────
+function toast(msg,dur=2600){
+  const el=document.getElementById('toast-el');
+  el.textContent=msg; el.classList.add('show');
+  setTimeout(()=>el.classList.remove('show'),dur);
+}
+function openModal(id){document.getElementById(id).classList.add('open');}
+function closeModal(id){document.getElementById(id).classList.remove('open');}
+function openPanel(title,sub,body,foot){
+  document.getElementById('sp-title').textContent=title;
+  document.getElementById('sp-sub').textContent=sub||'';
+  document.getElementById('sp-body').innerHTML=body;
+  document.getElementById('sp-foot').innerHTML=foot||'';
+  document.getElementById('sp').classList.add('open');
+  document.getElementById('pov').classList.add('open');
+}
+function closePanel(){
+  document.getElementById('sp').classList.remove('open');
+  document.getElementById('pov').classList.remove('open');
+}
+function switchL1(l1){
+  currentL1=l1; unmappedFilter=false; ownerGapFilter=false;
+  document.querySelectorAll('[id^="nl"]').forEach(e=>e.classList.remove('active'));
+  const n=document.getElementById('nl'+l1); if(n) n.classList.add('active');
+  closePanel(); render();
+}
+function navToast(vs,name){toast(`Navigating to ${vs} — ${name}`);}
+function badge(t,c){return`<span class="badge ${c}">${t}</span>`;}
+function prog(pct,color='#1D4ED8'){return`<div class="prog"><div class="prog-f" style="width:${pct}%;background:${color}"></div></div>`;}
+function ini(n){return n?n.split(' ').map(w=>w[0]).join('').slice(0,2).toUpperCase():'?';}
+function prio(p){return p==='High'?'br':p==='Medium'?'ba':'bgr';}
+function crit(c){return c==='Critical'?'br':c==='High'?'ba':c==='Medium'?'bb':'bgr';}
+function aColor(score,priority){
+  if(score===0) return {bg:'#FEF2F2',bar:'#DC2626',text:'#DC2626'};
+  if(priority==='High'&&score<50) return {bg:'#FFFBEB',bar:'#D97706',text:'#D97706'};
+  if(score>=70) return {bg:'#ECFDF5',bar:'#059669',text:'#059669'};
+  if(score>=45) return {bg:'#FFFBEB',bar:'#D97706',text:'#D97706'};
+  return {bg:'#FEF2F2',bar:'#DC2626',text:'#DC2626'};
+}
+
+// ─── MODEL PREVIEW ────────────────────────────────────────────────────────
+function updateModelPreview(){
+  const src=document.getElementById('model-src').value;
+  const depth=document.getElementById('model-depth').value;
+  const m=MODEL_DATA[src]||MODEL_DATA.banking;
+  document.getElementById('mprev-title').textContent=m.title;
+  const depthLabel={2:'2 levels',3:'3 levels',4:'4 levels'}[depth]||'3 levels';
+  document.getElementById('mprev-stats').textContent=m.stats+' · '+depthLabel;
+  const domainsEl=document.getElementById('mprev-domains');
+  domainsEl.innerHTML=m.domains.slice(0,4).map(d=>`
+  <div style="display:flex;align-items:center;justify-content:space-between;padding:5px 0;border-bottom:1px solid #CCFBF1;font-size:12px;">
+    <span style="color:#0D9488;font-weight:500;">${d.name}</span>
+    <span style="color:#6B7280;">${d.n} caps</span>
+  </div>`).join('')+`<div style="font-size:11px;color:#6B7280;margin-top:6px;">+${m.domains.length-4} more domains — click Preview full model →</div>`;
+}
+function openModelFullPreview(){
+  const src=document.getElementById('model-src').value;
+  const m=MODEL_DATA[src]||MODEL_DATA.banking;
+  document.getElementById('full-model-title').textContent=m.title+' — Full Hierarchy';
+  document.getElementById('full-model-stats').textContent=m.stats;
+  // Populate domain filter
+  const df=document.getElementById('domain-filter');
+  df.innerHTML='<option value="">All domains</option>'+m.domains.map(d=>`<option>${d.name}</option>`).join('');
+  renderFullModel(m,'','');
+  openModal('model-full-modal');
+}
+function renderFullModel(m,search,domain){
+  const body=document.getElementById('full-model-body');
+  const filtered=m.domains.filter(d=>!domain||d.name===domain);
+  body.innerHTML=filtered.map(d=>{
+    const caps=search?d.caps.filter(c=>c.toLowerCase().includes(search.toLowerCase())):d.caps;
+    if(!caps.length) return '';
+    return`<div style="margin-bottom:16px;">
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;">
+        <div style="font-size:13px;font-weight:600;color:#111827;">${d.name}</div>
+        <span class="badge bb">${d.n} capabilities</span>
+      </div>
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:6px;">
+        ${caps.map(c=>{
+          const existing=CAPS.find(cap=>cap.name===c);
+          return`<div style="padding:7px 10px;background:${existing?'#ECFDF5':'#F9FAFB'};border:1px solid ${existing?'#A7F3D0':'#E5E7EB'};border-radius:7px;font-size:12px;color:${existing?'#065F46':'#374151'};" title="${existing?'Currently in your portfolio':'Not yet mapped'}">
+            ${existing?'✓ ':''}<strong>${c}</strong>
+          </div>`;
+        }).join('')}
+      </div>
+    </div>`;
+  }).join('');
+}
+function filterModelCaps(q){
+  const src=document.getElementById('model-src').value;
+  const domain=document.getElementById('domain-filter').value;
+  renderFullModel(MODEL_DATA[src]||MODEL_DATA.banking,q,domain);
+}
+function filterModelDomain(domain){
+  const src=document.getElementById('model-src').value;
+  const q=document.getElementById('cap-search').value;
+  renderFullModel(MODEL_DATA[src]||MODEL_DATA.banking,q,domain);
+}
+function activateModel(){
+  const src=document.getElementById('model-src').value;
+  const m=MODEL_DATA[src]||MODEL_DATA.banking;
+  closeModal('model-modal'); closeModal('model-full-modal');
+  toast(`${m.title} activated — ${m.stats}`);
+}
+
+// ─── EXPORT ────────────────────────────────────────────────────────────────
+function openExportModal(){openModal('export-modal');}
+function runExport(){
+  closeModal('export-modal');
+  const fmt=document.getElementById('exp-format').value;
+  toast(`Generating ${fmt}…`);
+  setTimeout(()=>toast('Report ready — download starting'),1800);
+}
+
+// ─── TRANSFER ─────────────────────────────────────────────────────────────
+function openTransfer(app){
+  document.getElementById('t-app').textContent=app;
+  document.getElementById('t-new-owner').value='';
+  openModal('transfer-modal');
+}
+function confirmTransfer(){
+  const newOwner=document.getElementById('t-new-owner').value||'the new owner';
+  const app=document.getElementById('t-app').textContent;
+  closeModal('transfer-modal'); closePanel();
+  toast(`Ownership of ${app} transferred to ${newOwner}`);
+  // Update data
+  const a=APPS.find(x=>x.name===app); if(a) a.owner=newOwner;
+}
+
+// ─── SEARCH ───────────────────────────────────────────────────────────────
+function doSearch(q){
+  const res=document.getElementById('search-results'); if(!res) return;
+  if(!q||q.length<2){res.innerHTML='<div style="text-align:center;padding:24px;color:#9CA3AF;font-size:13px;">Type to search capabilities, applications, owners, or business units</div>';return;}
+  const hits=[];
+  CAPS.filter(c=>c.name.toLowerCase().includes(q.toLowerCase())).slice(0,3).forEach(c=>
+    hits.push({type:'Capability',typeColor:'#1D4ED8',name:c.name,meta:c.l1+' · '+c.n+' app'+(c.n!==1?'s':''),onclick:`showCapPanel('${c.id}')`}));
+  APPS.filter(a=>a.name.toLowerCase().includes(q.toLowerCase())||a.bu.toLowerCase().includes(q.toLowerCase())||(a.owner&&a.owner.toLowerCase().includes(q.toLowerCase()))).slice(0,4).forEach(a=>
+    hits.push({type:'Application',typeColor:'#0D9488',name:a.name,meta:a.bu+(a.owner?' · '+a.owner:''),onclick:`showAppPanel('${a.name}')`}));
+  CLUSTERS.filter(c=>c.cap.toLowerCase().includes(q.toLowerCase())).slice(0,2).forEach(c=>
+    hits.push({type:'Cluster',typeColor:'#D97706',name:c.cap+' ('+c.apps.length+' apps)',meta:c.cost+' · '+c.overlap+' overlap',onclick:`showClusterPanel('${c.id}')`}));
+  if(!hits.length){res.innerHTML=`<div style="text-align:center;padding:24px;color:#9CA3AF;font-size:13px;">No results for "<strong>${q}</strong>"</div>`;return;}
+  res.innerHTML=hits.map(h=>`<div class="sr" onclick="${h.onclick}">
+    <div style="font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:0.5px;color:${h.typeColor};margin-bottom:2px;">${h.type}</div>
+    <div style="font-size:13px;font-weight:500;color:#111827;">${h.name}</div>
+    <div style="font-size:11px;color:#9CA3AF;margin-top:1px;">${h.meta}</div>
+  </div>`).join('');
+}
+
+// ─── PANELS ───────────────────────────────────────────────────────────────
+function showCapPanel(id){
+  const c=CAPS.find(x=>x.id===id); if(!c) return;
+  openPanel(c.name,c.l1+' · '+c.n+' application'+(c.n!==1?'s':''),`
+  <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:16px;">
+    ${badge(c.priority+' priority',prio(c.priority))}
+    ${c.n===0?badge('Coverage gap','br'):c.n>=4?badge('Oversubscribed','ba'):badge('Covered','bg')}
+  </div>
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:16px;">
+    <div class="kpi"><div class="kl">Apps Supporting</div><div class="kv">${c.n}</div></div>
+    <div class="kpi"><div class="kl">Strategic Priority</div><div class="kv" style="font-size:20px;">${c.priority}</div></div>
+  </div>
+  ${c.apps.length?`<div class="sec-lbl">Supporting Applications</div>
+  ${c.apps.map((a,i)=>`<div style="display:flex;align-items:center;justify-content:space-between;padding:10px 12px;border:1px solid #F3F4F6;border-radius:8px;margin-bottom:6px;cursor:pointer;" onclick="showAppPanel('${a}')">
+    <span style="font-size:13px;font-weight:500;">${a}</span>
+    ${badge(i===0?'Primary':'Secondary',i===0?'bt':'bgr')}
+  </div>`).join('')}
+  <div class="divider"></div>
+  <div class="sec-lbl">Edit Capability Mappings</div>
+  <div style="margin-bottom:8px;"><label class="fl">Add application</label>
+    <div style="display:flex;gap:6px;">
+      <select class="fsel" id="add-app-sel" style="flex:1;font-size:12px;">
+        ${APPS.filter(a=>!c.apps.includes(a.name)).slice(0,8).map(a=>`<option>${a.name}</option>`).join('')}
+      </select>
+      <button class="btn btn-sm btn-p" onclick="toast('Mapping added — saved')">Add</button>
+    </div>
+  </div>` : `<div class="danger-box">
+    <div style="font-size:13px;font-weight:600;color:#DC2626;margin-bottom:4px;">No application coverage</div>
+    <div style="font-size:12px;color:#374151;margin-bottom:10px;">This ${c.priority.toLowerCase()} priority capability has no supporting tool.</div>
+    <button class="btn btn-sm" onclick="closePanel();switchL1('09')">Plan investment →</button>
+  </div>`}`,
+  c.n>0?`<button class="btn" onclick="toast('Capability flagged for review')">Flag for review</button>
+    <button class="btn btn-p" onclick="toast('Mapping changes saved')">Save changes</button>`:
+    `<button class="btn btn-p" onclick="closePanel();openModal('invest-modal')">Add to investment plan</button>`);
+}
+
+function showAppPanel(name){
+  const a=APPS.find(x=>x.name===name); if(!a) return;
+  openPanel(name,a.bu,`
+  <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:16px;">
+    ${badge(a.crit,crit(a.crit))} ${badge(a.bu,'bb')}
+    ${a.owner?badge('Owned','bg'):badge('Owner missing','br')}
+  </div>
+  <div style="margin-bottom:12px;"><label class="fl">Business Owner</label>
+    <div style="display:flex;gap:6px;">
+      <input class="fi" value="${a.owner}" placeholder="Assign owner..." id="app-owner-${name.replace(/\s/g,'_')}" style="flex:1;">
+      <button class="btn btn-sm" onclick="saveAppOwner('${name}')">Save</button>
+    </div>
+  </div>
+  <div style="margin-bottom:14px;"><label class="fl">Support Owner</label>
+    <input class="fi" value="${a.support}" placeholder="Assign support owner...">
+  </div>
+  <div class="divider"></div>
+  <div class="sec-lbl" style="margin-bottom:8px;">Business Value Score</div>
+  <div style="display:flex;align-items:center;gap:12px;padding:12px;background:#F9FAFB;border-radius:10px;margin-bottom:12px;cursor:pointer;" onclick="openScoreModal('${name}')">
+    <div style="width:44px;height:44px;border-radius:10px;background:${a.score>=75?'#ECFDF5':a.score>=50?'#FFFBEB':'#FEF2F2'};display:flex;align-items:center;justify-content:center;">
+      <span style="font-size:18px;font-weight:700;color:${a.score>=75?'#059669':a.score>=50?'#D97706':'#DC2626'};">${a.score}</span>
+    </div>
+    <div style="flex:1;">
+      ${[['Strategic Alignment',a.scoreBreakdown.align,'#1D4ED8'],['Business Criticality',a.scoreBreakdown.crit,'#DC2626']].map(([l,v,c])=>`
+      <div style="display:flex;align-items:center;gap:6px;margin-bottom:4px;">
+        <span style="font-size:11px;color:#6B7280;width:130px;">${l}</span>
+        <div class="prog" style="flex:1;"><div class="prog-f" style="width:${v}%;background:${c};"></div></div>
+        <span style="font-size:11px;font-weight:500;width:28px;text-align:right;">${v}</span>
+      </div>`).join('')}
+    </div>
+    <svg width="14" height="14" fill="none" viewBox="0 0 16 16" style="color:#9CA3AF;flex-shrink:0;"><path stroke="currentColor" stroke-width="1.5" d="M6 4l4 4-4 4"/></svg>
+  </div>
+  <div class="sec-lbl" style="margin-bottom:8px;">Mapped Capabilities</div>
+  ${a.caps.length?a.caps.map(c=>`<div style="padding:8px 12px;background:#EFF6FF;color:#1D4ED8;border-radius:8px;margin-bottom:6px;font-size:13px;font-weight:500;cursor:pointer;" onclick="showCapPanel('${CAPS.find(x=>x.name===c)?.id||''}')">→ ${c}</div>`).join(''):
+  `<div style="padding:12px;background:#FEF2F2;border-radius:8px;font-size:13px;color:#DC2626;font-weight:500;">No capabilities mapped</div>`}`,
+  `<button class="btn" onclick="openTransfer('${name}')">Transfer ownership</button>
+   <button class="btn btn-p" onclick="saveAppOwner('${name}');toast('Changes saved for ${name}')">Save changes</button>`);
+}
+
+function saveAppOwner(name){
+  const el=document.getElementById('app-owner-'+name.replace(/\s/g,'_'));
+  if(el){const a=APPS.find(x=>x.name===name);if(a){a.owner=el.value;toast('Owner updated for '+name);}}
+}
+
+function openScoreModal(name){
+  const a=APPS.find(x=>x.name===name); if(!a) return;
+  document.getElementById('score-app-name').textContent=name;
+  const bd=a.scoreBreakdown;
+  document.getElementById('score-modal-body').innerHTML=`
+  <div style="text-align:center;margin-bottom:20px;">
+    <div style="font-size:48px;font-weight:300;color:${a.score>=75?'#059669':a.score>=50?'#D97706':'#DC2626'};line-height:1;">${a.score}</div>
+    <div style="font-size:13px;color:#6B7280;margin-top:4px;">Composite Business Value Score</div>
+    ${badge(a.score>=75?'High value':a.score>=50?'Medium value':'Low value',a.score>=75?'bg':a.score>=50?'ba':'br')}
+  </div>
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:16px;">
+    ${[['Strategic Alignment',bd.align,'#1D4ED8',35],['Business Criticality',bd.crit,'#DC2626',25],['User Satisfaction',bd.sat,'#0D9488',20],['Technical Health',bd.health,'#D97706',20]].map(([l,v,c,w])=>`
+    <div style="padding:12px;background:#F9FAFB;border-radius:10px;">
+      <div style="font-size:11px;color:#6B7280;margin-bottom:4px;">${l} <span style="color:#9CA3AF;">(weight: ${w}%)</span></div>
+      <div style="font-size:22px;font-weight:600;color:${c};margin-bottom:6px;">${v}</div>
+      <div class="prog"><div class="prog-f" style="width:${v}%;background:${c};"></div></div>
+    </div>`).join('')}
+  </div>
+  <div style="padding:12px;background:#F9FAFB;border-radius:10px;">
+    <div style="font-size:12px;font-weight:500;color:#111827;margin-bottom:4px;">Score interpretation</div>
+    <div style="font-size:12px;color:#6B7280;line-height:1.6;">${a.score>=75?`<strong>${name}</strong> delivers strong strategic value. High criticality and alignment scores suggest this application is central to portfolio outcomes.`:a.score>=50?`<strong>${name}</strong> delivers moderate portfolio value. Consider whether strategic alignment and user satisfaction can be improved through better configuration or training.`:`<strong>${name}</strong> scores below the portfolio average. Review whether this application should be retired, replaced, or invested in to improve performance.`}</div>
+  </div>`;
+  openModal('score-modal');
+}
+
+function showClusterPanel(id){
+  const cl=CLUSTERS.find(c=>c.id===id); if(!cl) return;
+  openPanel('Redundancy Cluster',cl.cap,`
+  <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:16px;">
+    ${cl.status==='validated'?badge('Validated','ba'):badge('Suspected','bgr')}
+    ${badge(cl.overlap+' feature overlap','br')}
+  </div>
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:16px;">
+    <div class="kpi"><div class="kl">Combined TCO</div><div class="kv" style="font-size:20px;">${cl.cost}</div></div>
+    <div class="kpi"><div class="kl">Est. Saving</div><div class="kv" style="font-size:20px;color:#059669;">${cl.saving}</div></div>
+  </div>
+  <div class="sec-lbl">Applications in Cluster</div>
+  ${cl.apps.map((a,i)=>`<div style="display:flex;align-items:center;justify-content:space-between;padding:10px 12px;border:1px solid #F3F4F6;border-radius:8px;margin-bottom:6px;cursor:pointer;" onclick="showAppPanel('${a}')">
+    <span style="font-size:13px;font-weight:500;">${a}</span>
+    ${i===0?badge('Keep — strategic standard','bg'):badge('Retire candidate','br')}
+  </div>`).join('')}
+  <div class="divider"></div>
+  <div class="sec-lbl">Consolidation Analysis</div>
+  <div style="padding:10px;background:#FFFBEB;border-radius:8px;border:1px solid #FDE68A;font-size:12px;color:#374151;">
+    Retiring ${cl.apps.slice(1).join(' and ')} would save an estimated <strong>${cl.saving}</strong> per year while retaining full capability coverage via ${cl.apps[0]}.
+  </div>`,
+  `<button class="btn" onclick="toggleCluster('${id}');closePanel()">${cl.status==='validated'?'Revert to Suspected':'Validate cluster'}</button>
+   <button class="btn btn-p" onclick="closePanel();toast('Consolidation plan sent to action register — ${cl.apps.length} apps logged')">Route to action register</button>`);
+}
+
+function showAlignPanel(obj){
+  const pct=Math.round(obj.aligned/(obj.aligned+obj.gap+0.5)*100);
+  const barColor=pct>=70?'#059669':pct>=50?'#D97706':'#DC2626';
+  openPanel(obj.name,obj.priority+' strategic priority',`
+  <div style="margin-bottom:16px;">
+    <div class="kl">Portfolio Alignment Score</div>
+    <div style="font-size:40px;font-weight:300;color:${barColor};margin:6px 0;">${obj.aligned>0?pct+'%':'No apps'}</div>
+    <div class="prog" style="height:6px;margin-top:4px;"><div class="prog-f" style="width:${pct}%;background:${barColor};"></div></div>
+  </div>
+  <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:16px;">
+    <div class="kpi"><div class="kl">Aligned Apps</div><div class="kv" style="font-size:20px;color:#059669;">${obj.aligned}</div></div>
+    <div class="kpi"><div class="kl">Gaps</div><div class="kv" style="font-size:20px;color:${obj.gap>0?'#DC2626':'#059669'}">${obj.gap}</div></div>
+    <div class="kpi"><div class="kl">Annual Spend</div><div class="kv" style="font-size:16px;">${obj.spend||'—'}</div></div>
+  </div>
+  ${obj.aligned>0?`<div class="sec-lbl" style="margin-bottom:8px;">Supporting Applications</div>
+  ${APPS.filter(a=>a.score>50).slice(0,obj.aligned).map(a=>`<div style="display:flex;align-items:center;gap:8px;padding:8px 10px;border:1px solid #F3F4F6;border-radius:8px;margin-bottom:5px;cursor:pointer;" onclick="showAppPanel('${a.name}')">
+    <div class="av">${ini(a.name)}</div>
+    <div style="flex:1;"><div style="font-size:12px;font-weight:500;">${a.name}</div><div style="font-size:11px;color:#9CA3AF;">${a.bu}</div></div>
+    <span style="font-size:11px;font-weight:600;color:${a.score>=75?'#059669':'#D97706'};">${a.score}</span>
+  </div>`).join('')}`:''}
+  ${obj.gap>0?`<div class="divider"></div>
+  <div class="sec-lbl" style="margin-bottom:8px;">Capability Gaps (${obj.gap})</div>
+  <div class="danger-box">
+    <div style="font-size:12px;font-weight:500;color:#DC2626;margin-bottom:4px;">${obj.gap} supporting capability${obj.gap>1?'s have':' has'} no application coverage</div>
+    <div style="font-size:12px;color:#374151;">Investment is needed to close strategic gaps in this objective area.</div>
+    <button class="btn btn-sm" style="margin-top:8px;" onclick="closePanel();openModal('invest-modal')">Plan investment →</button>
+  </div>`:''}`,
+  `<button class="btn" onclick="closePanel();openModal('okr-modal')">Map application to objective</button>
+   <button class="btn btn-p" onclick="closePanel();toast('Investment review flagged for '+\`${obj.name}\`)">Flag for investment review</button>`);
+}
+
+function profileBody(){return`
+  <div style="display:flex;align-items:center;gap:12px;margin-bottom:16px;">
+    <div class="av" style="width:48px;height:48px;font-size:16px;background:#312E81;color:#A5B4FC;">AD</div>
+    <div><div style="font-size:15px;font-weight:600;">Alex Director</div><div style="font-size:12px;color:#6B7280;">Portfolio Lead — Acme Corp</div></div>
+  </div>
+  <div class="sec-lbl">Your Portfolio Stats</div>
+  ${[['Active Value Streams','9 of 9'],['Capabilities Managed','128'],['Applications in Scope','148'],['Last Review','12 Jan 2025']].map(([l,v])=>`<div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid #F9FAFB;font-size:13px;"><span style="color:#6B7280;">${l}</span><span style="font-weight:500;">${v}</span></div>`).join('')}`;}
+
+// ─── CLUSTER TOGGLE ───────────────────────────────────────────────────────
+function filterClusters(f){
+  document.querySelectorAll('.cf-btn').forEach(b=>{b.style.background='';b.style.color='';b.style.borderColor='#E5E7EB';});
+  const a=document.getElementById('cf-'+f);
+  if(a){a.style.background='#1D4ED8';a.style.color='#fff';a.style.borderColor='#1D4ED8';}
+  CLUSTERS.forEach(c=>{const el=document.getElementById('cl-'+c.id);if(el)el.style.display=(f==='all'||c.status===f)?'':'none';});
+}
+function toggleCluster(id){
+  const c=CLUSTERS.find(x=>x.id===id);if(!c)return;
+  c.status=c.status==='validated'?'suspected':'validated';
+  const el=document.getElementById('cl-'+id);if(!el)return;
+  el.className='cl-card '+c.status;
+  const sb=document.getElementById('cl-status-'+id);
+  if(sb){sb.className='badge '+(c.status==='validated'?'ba':'bgr');sb.textContent=c.status==='validated'?'Validated':'Suspected';}
+  const tb=document.getElementById('cl-toggle-'+id);
+  if(tb)tb.textContent=c.status==='validated'?'Revert':'Validate';
+  toast(c.status==='validated'?'Cluster validated':'Cluster reverted to Suspected');
+}
+
+// ─── HEATMAP CONTROLS ─────────────────────────────────────────────────────
+let hmView='total';
+function switchHmView(v){
+  hmView=v;
+  ['total','primary'].forEach(x=>{
+    const b=document.getElementById('hm-'+x);
+    if(b){b.style.background=x===v?'#1D4ED8':'';b.style.color=x===v?'#fff':'';b.style.borderColor=x===v?'#1D4ED8':'#E5E7EB';}
+  });
+  document.querySelectorAll('.hm-val').forEach(el=>{
+    const total=parseInt(el.dataset.total)||0;
+    const primary=parseInt(el.dataset.primary)||0;
+    const display=v==='primary'?primary:total;
+    el.textContent=display===0?'GAP':display>=4?'OVR':display;
+    el.className='hm '+(display===0?'hm0':display>=4?'hm1':display===1?'hm1':display===2?'hm2':'hm3');
+  });
+  toast('Showing '+(v==='primary'?'primary-only':'total')+' application coverage');
+}
+
+// ─── UNMAPPED / OWNER FILTER ──────────────────────────────────────────────
+function toggleUnmapped(){
+  unmappedFilter=!unmappedFilter;
+  const btn=document.getElementById('unmapped-btn');
+  if(btn){btn.style.background=unmappedFilter?'#1D4ED8':'';btn.style.color=unmappedFilter?'#fff':'';btn.style.borderColor=unmappedFilter?'#1D4ED8':'#E5E7EB';}
+  document.querySelectorAll('.app-row').forEach(row=>{
+    const hasMap=row.dataset.mapped==='true';
+    row.style.display=unmappedFilter&&hasMap?'none':'';
+  });
+  toast(unmappedFilter?'Showing unmapped applications only':'Showing all applications');
+}
+function toggleOwnerGap(){
+  ownerGapFilter=!ownerGapFilter;
+  const btn=document.getElementById('ownergap-btn');
+  if(btn){btn.style.background=ownerGapFilter?'#1D4ED8':'';btn.style.color=ownerGapFilter?'#fff':'';btn.style.borderColor=ownerGapFilter?'#1D4ED8':'#E5E7EB';}
+  document.querySelectorAll('.owner-row').forEach(row=>{
+    const hasOwner=row.dataset.owned==='true';
+    row.style.display=ownerGapFilter&&hasOwner?'none':'';
+  });
+  toast(ownerGapFilter?'Showing applications without an owner':'Showing all applications');
+}
+
+// ─── AI SUGGESTIONS ───────────────────────────────────────────────────────
+function acceptMapping(app,cap,id){
+  document.getElementById('sug-'+id).style.display='none';
+  toast(`Mapping accepted: ${app} → ${cap}`);
+  const c=CAPS.find(x=>x.name===cap); if(c&&!c.apps.includes(app)){c.apps.push(app);c.n++;}
+}
+
+// ─── BAM CELL ─────────────────────────────────────────────────────────────
+function openBamCell(cap,bu,count){
+  if(count===0){toast('No applications at this intersection');return;}
+  document.getElementById('bam-title').textContent=cap+' × '+bu;
+  const relApps=APPS.filter(a=>a.caps.some(c=>c.toLowerCase().includes(cap.toLowerCase().split(' ')[0]))||a.bu===bu).slice(0,count);
+  document.getElementById('bam-body').innerHTML=`
+  <div style="font-size:13px;color:#6B7280;margin-bottom:12px;">${count} application${count!==1?'s':''} at this intersection</div>
+  ${relApps.slice(0,count).map(a=>`<div style="display:flex;align-items:center;gap:10px;padding:10px 12px;border:1px solid #F3F4F6;border-radius:8px;margin-bottom:6px;cursor:pointer;" onclick="closeModal('bam-modal');showAppPanel('${a.name}')">
+    <div class="av">${ini(a.name)}</div>
+    <div style="flex:1;"><div style="font-size:13px;font-weight:500;">${a.name}</div><div style="font-size:11px;color:#9CA3AF;">${a.bu}</div></div>
+    ${badge(a.crit,crit(a.crit))}
+  </div>`).join('')}`;
+  openModal('bam-modal');
+}
+
+// ─── VIEWPOINT GENERATE ───────────────────────────────────────────────────
+function generateViewpoint(name,forAudience,desc){
+  document.getElementById('vp-title').textContent=name;
+  document.getElementById('vp-sub').textContent='For: '+forAudience;
+  const viewData={
+    'Application View':{summary:'148 applications across 9 business units · 12 Critical · 38 High · 64 Medium · 34 Low',rows:APPS.slice(0,8)},
+    'Capability View':{summary:'128 capabilities · 3 coverage gaps · 4 oversubscribed · 74% mapping completeness',rows:null},
+    'Technology View':{summary:'6 technology platforms · 14 vendors · SAP, Salesforce, ServiceNow, Workday dominate',rows:null},
+    'Investment View':{summary:'$18.4M total portfolio spend · $4.2M non-strategic · $3.6M in validated redundancy clusters',rows:null},
+  };
+  const d=viewData[name]||viewData['Application View'];
+  document.getElementById('vp-body').innerHTML=`
+  <div style="padding:10px 12px;background:#F9FAFB;border-radius:8px;margin-bottom:14px;font-size:12px;color:#374151;">${d.summary}</div>
+  ${name==='Application View'?`
+  <table class="dt"><thead><tr><th>Application</th><th>Business Unit</th><th>Criticality</th><th>Owner</th><th>Score</th></tr></thead><tbody>
+    ${APPS.slice(0,8).map(a=>`<tr onclick="closeModal('viewpoint-modal');showAppPanel('${a.name}')"><td style="font-weight:500;">${a.name}</td><td style="color:#6B7280;">${a.bu}</td><td>${badge(a.crit,crit(a.crit))}</td><td>${a.owner||badge('Unassigned','br')}</td><td style="font-weight:600;color:${a.score>=75?'#059669':a.score>=50?'#D97706':'#DC2626'}">${a.score}</td></tr>`).join('')}
+  </tbody></table>`:`
+  <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;">
+    ${(name==='Capability View'?CAPS:name==='Technology View'?
+      [{name:'SAP',n:3,note:'ERP & Finance'},{name:'Salesforce',n:4,note:'CRM & Service'},{name:'ServiceNow',n:2,note:'ITSM & Workflows'},{name:'Workday',n:2,note:'HR & Finance'},{name:'Atlassian',n:2,note:'DevOps'},{name:'Microsoft',n:3,note:'Productivity'}]:
+      [{name:'Digital CX',spend:'$3.2M',pct:78},{name:'Ops Excellence',spend:'$2.8M',pct:71},{name:'Data Decisions',spend:'$1.4M',pct:42},{name:'Treasury',spend:'$0',pct:0},{name:'Talent',spend:'$940K',pct:55},{name:'Finance',spend:'$2.1M',pct:81}]
+    ).slice(0,6).map(item=>`
+    <div style="padding:12px;background:#F9FAFB;border-radius:10px;border:1px solid #E5E7EB;">
+      <div style="font-size:13px;font-weight:500;margin-bottom:4px;">${item.name}</div>
+      <div style="font-size:11px;color:#6B7280;">${item.note||item.spend||item.l1||''}</div>
+    </div>`).join('')}
+  </div>`}`;
+  openModal('viewpoint-modal');
+}
+
+// ─── ALIGN SORT ───────────────────────────────────────────────────────────
+const ALIGN_DATA=[
+  {cap:'Digital Customer Experience',priority:'High',align:78,spend:3.2,spendFmt:'$3.2M',apps:8,obj:'Digital CX'},
+  {cap:'Operational Excellence',priority:'High',align:71,spend:2.8,spendFmt:'$2.8M',apps:6,obj:'Ops Excellence'},
+  {cap:'Data-Driven Decisions',priority:'High',align:42,spend:1.4,spendFmt:'$1.4M',apps:5,obj:'Data & Analytics'},
+  {cap:'Treasury Management',priority:'High',align:0,spend:0,spendFmt:'$0',apps:0,obj:'Finance'},
+  {cap:'Talent Transformation',priority:'Medium',align:55,spend:0.94,spendFmt:'$940K',apps:3,obj:'HR & People'},
+  {cap:'Financial Optimization',priority:'Medium',align:81,spend:2.1,spendFmt:'$2.1M',apps:2,obj:'Finance'},
+  {cap:'Supply Chain Resilience',priority:'Low',align:67,spend:1.8,spendFmt:'$1.8M',apps:4,obj:'Supply Chain'},
+  {cap:'Document Management',priority:'Low',align:22,spend:0.64,spendFmt:'$640K',apps:4,obj:'Corporate IT'},
+];
+function sortAlign(by){
+  ['priority','score','spend'].forEach(x=>{const b=document.getElementById('sort-'+x);if(b){b.style.background='';b.style.color='';b.style.borderColor='#E5E7EB';}});
+  const a=document.getElementById('sort-'+by);if(a){a.style.background='#1D4ED8';a.style.color='#fff';a.style.borderColor='#1D4ED8';}
+  const sorted=[...ALIGN_DATA];
+  if(by==='score') sorted.sort((a,b)=>b.align-a.align);
+  else if(by==='spend') sorted.sort((a,b)=>b.spend-a.spend);
+  else sorted.sort((a,b)=>['High','Medium','Low'].indexOf(a.priority)-['High','Medium','Low'].indexOf(b.priority));
+  renderAlignRows(sorted);
+}
+function renderAlignRows(data){
+  const el=document.getElementById('align-rows');if(!el)return;
+  el.innerHTML=data.map(r=>{
+    const col=aColor(r.align,r.priority);
+    const mismatch=r.priority==='High'&&r.align<50;
+    return`<div class="align-row" style="${mismatch||r.apps===0?'background:#FAFAFA;border-color:'+(r.apps===0?'#FECACA':'#FDE68A')+';':''}"
+      onmouseenter="this.style.background='#F8FBFF';this.style.borderColor='#BFDBFE'"
+      onmouseleave="this.style.background='${mismatch||r.apps===0?'#FAFAFA':''}';this.style.borderColor='${r.apps===0?'#FECACA':mismatch?'#FDE68A':'transparent'}'"
+      onclick="showAlignPanel({name:'${r.cap}',priority:'${r.priority}',aligned:${r.apps},gap:${r.priority==='High'&&r.apps<3?3:1},spend:'${r.spendFmt}'})">
+      <div><div style="font-size:13px;font-weight:500;color:#111827;line-height:1.2;">${r.cap}</div><div style="font-size:11px;color:#9CA3AF;margin-top:1px;">${r.obj}</div></div>
+      <div>${badge(r.priority,prio(r.priority))}</div>
+      <div style="display:flex;align-items:center;gap:8px;">
+        <div style="width:6px;height:6px;border-radius:50%;background:${col.bar};flex-shrink:0;"></div>
+        <div style="flex:1;height:5px;background:#F3F4F6;border-radius:3px;overflow:hidden;"><div style="height:100%;width:${r.align}%;background:${col.bar};border-radius:3px;transition:width 0.4s;"></div></div>
+      </div>
+      <div style="font-size:13px;font-weight:600;color:${col.text};">${r.align>0?r.align+'%':'—'}</div>
+      <div style="font-size:12px;color:#374151;">${r.spendFmt}</div>
+      <div style="font-size:11px;color:#9CA3AF;text-align:center;">${r.apps>0?r.apps:'—'}</div>
+    </div>`;
+  }).join('');
+}
+
+// ─── SCORE WEIGHTS ────────────────────────────────────────────────────────
+function updateWeight(id,did,val){
+  WEIGHTS[id]=parseInt(val);
+  document.getElementById(id).textContent=val+'%';
+  const total=Object.values(WEIGHTS).reduce((a,b)=>a+b,0);
+  let offset=0;
+  [['w1','d-blue'],['w2','d-red'],['w3','d-teal'],['w4','d-amber']].forEach(([wk,dk])=>{
+    const dash=(WEIGHTS[wk]/total)*CIRC, gap=CIRC-dash;
+    const el=document.getElementById(dk);
+    if(el){el.setAttribute('stroke-dasharray',`${dash.toFixed(1)} ${gap.toFixed(1)}`);el.setAttribute('stroke-dashoffset',(-offset).toFixed(1));}
+    offset+=dash;
+  });
+  const tv=document.getElementById('donut-total');if(tv){tv.textContent=total+'%';tv.style.fill=total>100?'#DC2626':total<100?'#D97706':'#111827';}
+}
+
+// ─── APP SCORE LIST ───────────────────────────────────────────────────────
+function toggleAppList(which){
+  ['top','bot'].forEach(x=>{const b=document.getElementById('show-'+x);if(b){b.style.background=x===which?'#1D4ED8':'';b.style.color=x===which?'#fff':'';b.style.borderColor=x===which?'#1D4ED8':'#E5E7EB';}});
+  const list=document.getElementById('app-score-list'); if(!list) return;
+  const data=which==='top'?
+    [...APPS].sort((a,b)=>b.score-a.score).slice(0,6):
+    [...APPS].sort((a,b)=>a.score-b.score).slice(0,6);
+  list.innerHTML=data.map(a=>`<div style="display:flex;align-items:center;gap:10px;padding:7px 0;border-bottom:1px solid #F9FAFB;cursor:pointer;" onclick="openScoreModal('${a.name}')">
+    <div style="width:36px;height:36px;border-radius:8px;background:${a.score>=75?'#ECFDF5':a.score>=50?'#FFFBEB':'#FEF2F2'};display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+      <span style="font-size:13px;font-weight:700;color:${a.score>=75?'#059669':a.score>=50?'#D97706':'#DC2626'};">${a.score}</span>
+    </div>
+    <div style="flex:1;min-width:0;"><div style="font-size:12px;font-weight:500;color:#111827;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${a.name}</div>
+      <div style="height:3px;background:#F3F4F6;border-radius:2px;margin-top:4px;overflow:hidden;"><div style="height:100%;width:${a.score}%;background:${a.score>=75?'#059669':a.score>=50?'#D97706':'#DC2626'};border-radius:2px;"></div></div>
+    </div>
+    <div style="font-size:11px;font-weight:500;color:#9CA3AF;min-width:24px;text-align:right;">→</div>
+  </div>`).join('');
+}
+
+// ─── OKR / INVEST ─────────────────────────────────────────────────────────
+function saveOKRMapping(){
+  closeModal('okr-modal');
+  const app=document.getElementById('okr-app').value;
+  const selected=[...document.querySelectorAll('#okr-objectives input:checked')].map(el=>el.parentElement.textContent.trim());
+  toast(`${app} mapped to ${selected.length} objective${selected.length!==1?'s':''}`);
+}
+
+// ─── COPY NARRATIVE ───────────────────────────────────────────────────────
+function copyNarrative(){
+  const text=`Strategic Alignment Summary — Q1 2025\n\nWell Aligned: Digital CX and Operational Excellence are strongly supported with 78% and 71% alignment scores respectively.\n\nInvestment Gap: Data-Driven Decisions is a High priority but receives only $1.4M — 62% below average for high-priority objectives. Master Data Management has zero coverage.\n\nOver-Invested: Document Management receives $640K against a Low strategic priority. Four overlapping tools suggest $220K consolidation opportunity.`;
+  navigator.clipboard.writeText(text).then(()=>toast('Narrative copied to clipboard')).catch(()=>toast('Copy not available in this context'));
+}
+
+// ─── PAGE RENDERS ─────────────────────────────────────────────────────────
+function renderL105(){
+  document.getElementById('topbar-title').textContent='Capability Model & Application Mapping';
+  const byL1={};
+  CAPS.forEach(c=>{if(!byL1[c.l1])byL1[c.l1]=[];byL1[c.l1].push(c);});
+  const l1Names=Object.keys(byL1);
+  return`
+  <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:20px;">
+    <div class="kpi" style="border-left:3px solid #1D4ED8;">
+      <div class="kl">Capabilities Defined</div>
+      <div style="display:flex;align-items:baseline;gap:8px;margin:6px 0 4px;"><div class="kv">128</div><span style="font-size:12px;color:#6B7280;">across 6 domains</span></div>
+      <div class="kbar"><div class="kbar-f" style="width:100%;background:#1D4ED8;"></div></div>
+      <div class="kf" style="margin-top:6px;">Info-Tech Banking Model active</div>
+    </div>
+    <div class="kpi" style="border-left:3px solid #059669;">
+      <div class="kl">Mapping Completeness</div>
+      <div style="display:flex;align-items:baseline;gap:8px;margin:6px 0 4px;"><div class="kv">74%</div><span style="font-size:12px;color:#059669;font-weight:500;">↑ 8%</span></div>
+      <div class="kbar"><div class="kbar-f" style="width:74%;background:#059669;"></div></div>
+      <div class="kf" style="margin-top:6px;">vs last quarter · 110/148 apps mapped</div>
+    </div>
+    <div class="kpi" style="border-left:3px solid #D97706;">
+      <div class="kl">Unmapped Applications</div>
+      <div style="display:flex;align-items:baseline;gap:8px;margin:6px 0 4px;"><div class="kv">12</div><span style="font-size:12px;color:#D97706;font-weight:500;">needs attention</span></div>
+      <div class="kbar"><div class="kbar-f" style="width:8%;background:#D97706;"></div></div>
+      <div class="kf" style="margin-top:6px;">8% of total portfolio</div>
+    </div>
+    <div class="kpi" style="border-left:3px solid #DC2626;">
+      <div class="kl">Coverage Gaps</div>
+      <div style="display:flex;align-items:baseline;gap:8px;margin:6px 0 4px;"><div class="kv">3</div><span style="font-size:12px;color:#DC2626;font-weight:500;">high priority</span></div>
+      <div class="kbar"><div class="kbar-f" style="width:100%;background:#DC2626;"></div></div>
+      <div class="kf" style="margin-top:6px;">Zero application coverage</div>
+    </div>
+  </div>
+
+  <div style="background:linear-gradient(135deg,#EFF6FF 0%,#F5F3FF 100%);border:1px solid #DBEAFE;border-radius:12px;padding:16px 20px;margin-bottom:20px;display:flex;align-items:start;gap:16px;">
+    <div style="flex-shrink:0;margin-top:2px;"><div style="width:32px;height:32px;background:#7C3AED;border-radius:8px;display:flex;align-items:center;justify-content:center;"><div style="width:8px;height:8px;background:white;border-radius:50%;animation:pulse 2s infinite;"></div></div></div>
+    <div style="flex:1;min-width:0;">
+      <div style="font-size:11px;font-weight:600;color:#7C3AED;text-transform:uppercase;letter-spacing:0.6px;margin-bottom:8px;">AI Mapping Intelligence</div>
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:16px;font-size:13px;color:#1E1B4B;line-height:1.6;">
+        <div><div style="font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:0.5px;color:#DC2626;margin-bottom:4px;">Priority Gaps</div>Treasury Management, Master Data Management, and Learning & Development are High priority with zero application coverage — investment cases needed urgently.</div>
+        <div><div style="font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:0.5px;color:#D97706;margin-bottom:4px;">Top Redundancy</div>Infrastructure Monitoring has 4 overlapping tools with 65% feature overlap. Estimated consolidation saving: <strong style="color:#059669;">$410K/yr</strong>.</div>
+        <div><div style="font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:0.5px;color:#059669;margin-bottom:4px;">Quick Wins</div>3 unmapped applications have high-confidence AI suggestions ready to accept in one click — HubSpot, Zendesk, and OpenText.</div>
+      </div>
+    </div>
+    <button class="btn btn-sm" style="flex-shrink:0;color:#7C3AED;border-color:#C4B5FD;margin-top:2px;" onclick="switchL1('06')">View redundancy →</button>
+  </div>
+
+  <div class="card" style="margin-bottom:16px;">
+    <div class="ch">
+      <div><div class="ct">Capability Coverage Heatmap</div><div class="cs">Click any row to drill into detail · coverage shown by domain</div></div>
+      <div style="display:flex;gap:6px;">
+        <button class="btn btn-sm" id="hm-total" onclick="switchHmView('total')" style="background:#1D4ED8;color:#fff;border-color:#1D4ED8;">Total apps</button>
+        <button class="btn btn-sm" id="hm-primary" onclick="switchHmView('primary')">Primary only</button>
+        <button class="btn btn-sm" onclick="openModal('model-modal')">Configure model</button>
+      </div>
+    </div>
+    <div style="display:grid;grid-template-columns:3fr 1fr;gap:0;align-items:start;">
+
+      <!-- Left: list-style heatmap rows grouped by domain -->
+      <div style="border-right:1px solid #F3F4F6;padding-right:24px;">
+        ${l1Names.map(l1=>`
+        <div style="margin-bottom:4px;">
+          <div style="font-size:10px;font-weight:600;color:#9CA3AF;text-transform:uppercase;letter-spacing:0.6px;padding:10px 8px 6px;">${l1}</div>
+          ${byL1[l1].map(c=>{
+            const barColor=c.n===0?'#DC2626':c.n>=4?'#D97706':c.n>=2?'#059669':'#6B7280';
+            const barPct=c.n===0?0:Math.min(100,c.n*28);
+            const statusLabel=c.n===0?'No coverage':c.n>=4?'Oversubscribed':'Covered';
+            const statusColor=c.n===0?'#DC2626':c.n>=4?'#D97706':'#059669';
+            return`<div style="display:grid;grid-template-columns:1fr 44px 140px 100px;align-items:center;gap:12px;padding:8px;border-radius:6px;cursor:pointer;transition:background 0.1s;" onmouseenter="this.style.background='#F9FAFB'" onmouseleave="this.style.background=''" onclick="showCapPanel('${c.id}')">
+              <span style="font-size:13px;color:#111827;">${c.name}</span>
+              <div class="hm hm-val ${c.n===0?'hm0':c.n>=4?'hm1':c.n===1?'hm1':c.n===2?'hm2':'hm3'}" style="justify-self:center;" data-total="${c.n}" data-primary="${Math.max(0,c.n-1)}">${c.n===0?'GAP':c.n>=4?'OVR':c.n}</div>
+              <div style="height:5px;background:#F3F4F6;border-radius:3px;overflow:hidden;"><div style="height:100%;width:${barPct}%;background:${barColor};border-radius:3px;transition:width 0.4s;"></div></div>
+              <span style="font-size:12px;font-weight:500;color:${statusColor};">${statusLabel}</span>
+            </div>`;
+          }).join('')}
+        </div>`).join('')}
+        <div style="display:flex;gap:14px;margin-top:8px;padding-top:10px;border-top:1px solid #F3F4F6;flex-wrap:wrap;">
+          ${[{c:'hm0',l:'Gap'},{c:'hm1',l:'1 app / oversubscribed'},{c:'hm2',l:'2 apps'},{c:'hm3',l:'3+ apps'}].map(l=>`<div style="display:flex;align-items:center;gap:5px;font-size:11px;color:#6B7280;"><div class="hm ${l.c}" style="width:22px;height:15px;font-size:8px;border-radius:4px;"></div>${l.l}</div>`).join('')}
+        </div>
+      </div>
+
+      <!-- Right: Completeness by Domain — matches screenshot exactly -->
+      <div style="padding-left:24px;padding-top:4px;">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;">
+          <span style="font-size:13px;font-weight:600;color:#111827;">Completeness by Domain</span>
+          <span style="font-size:13px;font-weight:600;color:#1D4ED8;">74% overall</span>
+        </div>
+        ${l1Names.map(l1=>{
+          const total=byL1[l1].length;
+          const mapped=byL1[l1].filter(c=>c.n>0).length;
+          const pct=Math.round(mapped/total*100);
+          const color=pct<60?'#DC2626':pct<80?'#D97706':'#059669';
+          return`<div style="margin-bottom:16px;">
+            <div style="display:flex;align-items:baseline;justify-content:space-between;margin-bottom:5px;">
+              <span style="font-size:13px;font-weight:500;color:#111827;">${l1}</span>
+              <span style="font-size:13px;font-weight:600;color:${color};">${pct}%</span>
+            </div>
+            <div style="height:6px;background:#F3F4F6;border-radius:3px;overflow:hidden;margin-bottom:4px;"><div style="height:100%;width:${pct}%;background:${color};border-radius:3px;transition:width 0.4s;"></div></div>
+            <div style="font-size:11px;color:#9CA3AF;">${mapped} of ${total} caps covered</div>
+          </div>`;
+        }).join('')}
+      </div>
+    </div>
+  </div>
+
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px;">
+    <div class="card">
+      <div class="ch">
+        <div><div class="ct">AI Mapping Suggestions</div><div class="cs">High-confidence suggestions ready to action</div></div>
+        <span class="badge bp">3 pending</span>
+      </div>
+      ${[{id:'s1',app:'HubSpot',cap:'Marketing Campaign Mgmt',conf:'High',reason:'Vendor category: Marketing Automation'},
+         {id:'s2',app:'Zendesk',cap:'Customer Service & Support',conf:'High',reason:'Keyword match: tickets, support, SLA'},
+         {id:'s3',app:'OpenText',cap:'Document Management',conf:'Medium',reason:'Category: Content Management'}].map(s=>`
+      <div id="sug-${s.id}" style="display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid #F9FAFB;">
+        <div style="flex:1;min-width:0;">
+          <div style="display:flex;align-items:center;gap:8px;margin-bottom:2px;">
+            <span style="font-size:13px;font-weight:500;color:#111827;">${s.app}</span>
+            <span style="font-size:11px;color:#9CA3AF;">→</span>
+            <span style="font-size:12px;color:#1D4ED8;font-weight:500;">${s.cap}</span>
+          </div>
+          <div style="font-size:11px;color:#9CA3AF;">${s.reason} · ${badge(s.conf+' confidence',s.conf==='High'?'bg':'ba')}</div>
+        </div>
+        <div style="display:flex;gap:5px;flex-shrink:0;">
+          <button class="btn btn-sm btn-g" onclick="acceptMapping('${s.app}','${s.cap}','${s.id}')">Accept</button>
+          <button class="btn btn-sm" onclick="showAppPanel('${s.app}')">Edit</button>
+          <button class="btn btn-sm btn-d" style="padding:5px 8px;" onclick="document.getElementById('sug-${s.id}').style.display='none';toast('Rejected')">✕</button>
+        </div>
+      </div>`).join('')}
+    </div>
+
+    <div class="card">
+      <div class="ch">
+        <div><div class="ct">Coverage vs Industry Benchmark</div><div class="cs">Your mapping completeness vs Info-Tech Banking peer group</div></div>
+      </div>
+      ${[{domain:'Customer Engagement',yours:71,benchmark:80},{domain:'IT Operations',yours:95,benchmark:88},{domain:'Finance',yours:85,benchmark:90},{domain:'Data & Analytics',yours:55,benchmark:75},{domain:'Governance',yours:60,benchmark:70},{domain:'Human Resources',yours:61,benchmark:72}].map(r=>`
+      <div style="display:grid;grid-template-columns:160px 1fr 50px;align-items:center;gap:12px;margin-bottom:10px;">
+        <span style="font-size:12px;color:#374151;">${r.domain}</span>
+        <div style="position:relative;height:6px;background:#F3F4F6;border-radius:3px;">
+          <div style="position:absolute;height:100%;width:${r.yours}%;background:${r.yours>=r.benchmark?'#059669':'#1D4ED8'};border-radius:3px;"></div>
+          <div style="position:absolute;left:${r.benchmark}%;top:-4px;width:2px;height:14px;background:#D97706;border-radius:1px;"></div>
+        </div>
+        <span style="font-size:11px;font-weight:500;color:${r.yours>=r.benchmark?'#059669':'#DC2626'};">${r.yours>=r.benchmark?'↑':'↓'}${Math.abs(r.yours-r.benchmark)}pp</span>
+      </div>`).join('')}
+      <div style="display:flex;gap:14px;margin-top:10px;padding-top:10px;border-top:1px solid #F3F4F6;font-size:11px;color:#9CA3AF;">
+        <div style="display:flex;align-items:center;gap:5px;"><div style="width:10px;height:4px;background:#1D4ED8;border-radius:2px;"></div>Your coverage</div>
+        <div style="display:flex;align-items:center;gap:5px;"><div style="width:2px;height:12px;background:#D97706;border-radius:1px;"></div>Peer median</div>
+        <div style="display:flex;align-items:center;gap:5px;"><div style="width:10px;height:4px;background:#059669;border-radius:2px;"></div>Above peer</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="ch">
+      <div><div class="ct">Application Mapping Editor</div><div class="cs">Click any row to open full editor · filter to focus curation</div></div>
+      <div style="display:flex;gap:6px;">
+        <button class="btn btn-sm" id="unmapped-btn" onclick="toggleUnmapped()">Unmapped only</button>
+        <button class="btn btn-sm btn-p" onclick="toast('All mapping changes saved to registry')">Save all</button>
+      </div>
+    </div>
+    <table class="dt">
+      <thead><tr><th>Application</th><th>Business Unit</th><th>Capabilities mapped</th><th>Owner</th><th>Criticality</th><th></th></tr></thead>
+      <tbody>
+        ${APPS.map(a=>`<tr class="app-row" data-mapped="${a.caps.length>0}" onclick="showAppPanel('${a.name}')">
+          <td style="font-weight:500;">${a.name}</td>
+          <td style="color:#6B7280;">${a.bu}</td>
+          <td>${a.caps.length?`<div style="display:flex;flex-wrap:wrap;gap:3px;">${a.caps.map(c=>`<span class="badge bb" style="font-size:10px;">${c.length>22?c.slice(0,22)+'…':c}</span>`).join('')}</div>`:badge('Unmapped','br')}</td>
+          <td>${a.owner?`<div style="display:flex;align-items:center;gap:6px;"><div class="av">${ini(a.owner)}</div><span style="font-size:12px;">${a.owner.split(' ')[0]}</span></div>`:badge('Unassigned','br')}</td>
+          <td>${badge(a.crit,crit(a.crit))}</td>
+          <td onclick="event.stopPropagation()"><button class="btn btn-sm" onclick="showAppPanel('${a.name}')">Edit</button></td>
+        </tr>`).join('')}
+      </tbody>
+    </table>
+  </div>`;
+}
+
+function renderL106(){
+  document.getElementById('topbar-title').textContent='Capability Gaps, Oversubscription & Redundancy';
+  return`
+  <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:20px;">
+    <div class="kpi" style="border-left:3px solid #DC2626;">
+      <div class="kl">Coverage Gaps</div>
+      <div style="display:flex;align-items:baseline;gap:8px;margin:6px 0 4px;"><div class="kv" style="color:#DC2626;">3</div><span style="font-size:12px;color:#DC2626;font-weight:500;">action required</span></div>
+      <div class="kbar"><div class="kbar-f" style="width:100%;background:#DC2626;"></div></div>
+      <div class="kf" style="margin-top:6px;">2 rated high strategic priority</div>
+    </div>
+    <div class="kpi" style="border-left:3px solid #D97706;">
+      <div class="kl">Oversubscribed</div>
+      <div style="display:flex;align-items:baseline;gap:8px;margin:6px 0 4px;"><div class="kv" style="color:#D97706;">4</div><span style="font-size:12px;color:#6B7280;">capabilities</span></div>
+      <div class="kbar"><div class="kbar-f" style="width:60%;background:#D97706;"></div></div>
+      <div class="kf" style="margin-top:6px;">4+ applications per capability</div>
+    </div>
+    <div class="kpi" style="border-left:3px solid #1D4ED8;">
+      <div class="kl">Redundancy Clusters</div>
+      <div style="display:flex;align-items:baseline;gap:8px;margin:6px 0 4px;"><div class="kv">6</div><span style="font-size:12px;color:#6B7280;">detected</span></div>
+      <div class="kbar"><div class="kbar-f" style="width:75%;background:#1D4ED8;"></div></div>
+      <div class="kf" style="margin-top:6px;">$5.6M combined annual TCO</div>
+    </div>
+    <div class="kpi" style="border-left:3px solid #059669;">
+      <div class="kl">Est. Consolidation Saving</div>
+      <div style="display:flex;align-items:baseline;gap:8px;margin:6px 0 4px;"><div class="kv" style="color:#059669;">$1.9M</div></div>
+      <div class="kbar"><div class="kbar-f" style="width:34%;background:#059669;"></div></div>
+      <div class="kf" style="margin-top:6px;">Across 3 validated clusters</div>
+    </div>
+  </div>
+
+  <div style="background:linear-gradient(135deg,#FEF2F2 0%,#FFFBEB 100%);border:1px solid #FECACA;border-radius:12px;padding:16px 20px;margin-bottom:20px;display:flex;align-items:start;gap:16px;">
+    <div style="flex-shrink:0;margin-top:2px;"><div style="width:32px;height:32px;background:#DC2626;border-radius:8px;display:flex;align-items:center;justify-content:center;"><div style="width:8px;height:8px;background:white;border-radius:50%;animation:pulse 2s infinite;"></div></div></div>
+    <div style="flex:1;min-width:0;">
+      <div style="font-size:11px;font-weight:600;color:#DC2626;text-transform:uppercase;letter-spacing:0.6px;margin-bottom:8px;">AI Redundancy & Gap Intelligence</div>
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:16px;font-size:13px;color:#1F2937;line-height:1.6;">
+        <div><div style="font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:0.5px;color:#DC2626;margin-bottom:4px;">Highest Priority Gap</div>Treasury Management has zero coverage despite a High strategic priority. No cash forecasting or hedging tooling — active operational risk with no remediation timeline set.</div>
+        <div><div style="font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:0.5px;color:#D97706;margin-bottom:4px;">Top Consolidation Target</div>CRM cluster (Salesforce, HubSpot, Zoho) has 87% feature overlap and $2.4M combined TCO. Retiring HubSpot and Zoho saves an estimated <strong style="color:#059669;">$820K annually</strong>.</div>
+        <div><div style="font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:0.5px;color:#1D4ED8;margin-bottom:4px;">Natural Window</div>HubSpot renews in 47 days — the optimal consolidation window to avoid auto-renewal and begin migration to Salesforce as the single CRM standard.</div>
+      </div>
+    </div>
+    <button class="btn btn-sm" style="flex-shrink:0;margin-top:2px;" onclick="openModal('invest-modal')">Plan investment →</button>
+  </div>
+
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px;">
+    <div class="card">
+      <div class="ch">
+        <div><div class="ct">Coverage Gaps — Zero Application Support</div><div class="cs">Sorted by strategic priority</div></div>
+        <button class="btn btn-sm btn-p" onclick="openModal('invest-modal')">+ Plan investment</button>
+      </div>
+      ${[{id:'c7',cap:'Treasury Management',l1:'Finance',priority:'High',note:'No cash forecasting or hedging tooling — active operational risk'},
+         {id:'c19',cap:'Master Data Management',l1:'Data & Analytics',priority:'High',note:'Data quality issues propagating across 12 downstream applications'},
+         {id:'c13',cap:'Learning & Development',l1:'Human Resources',priority:'Medium',note:'Currently managed via spreadsheets — L&D programme at risk'}].map(g=>`
+      <div style="display:flex;align-items:start;justify-content:space-between;gap:12px;padding:12px;background:#FEF2F2;border:1px solid #FECACA;border-radius:8px;margin-bottom:8px;cursor:pointer;transition:all 0.15s;" onmouseenter="this.style.borderColor='#DC2626'" onmouseleave="this.style.borderColor='#FECACA'" onclick="openModal('invest-modal')">
+        <div style="flex:1;min-width:0;">
+          <div style="display:flex;align-items:center;gap:8px;margin-bottom:3px;">${badge(g.priority,prio(g.priority))}<span style="font-size:13px;font-weight:500;color:#111827;">${g.cap}</span></div>
+          <div style="font-size:11px;color:#6B7280;margin-bottom:3px;">${g.l1}</div>
+          <div style="font-size:12px;color:#DC2626;">${g.note}</div>
+        </div>
+        <button class="btn btn-sm" style="flex-shrink:0;color:#DC2626;border-color:#FECACA;" onclick="event.stopPropagation();openModal('invest-modal')">Plan →</button>
+      </div>`).join('')}
+    </div>
+
+    <div class="card">
+      <div class="ch">
+        <div><div class="ct">Oversubscribed Capabilities</div><div class="cs">4+ applications covering the same capability — click to review</div></div>
+      </div>
+      ${CAPS.filter(c=>c.n>=4).map(c=>`
+      <div style="padding:12px;border:1px solid #FDE68A;background:#FFFBEB;border-radius:8px;margin-bottom:8px;cursor:pointer;transition:all 0.15s;" onmouseenter="this.style.borderColor='#D97706'" onmouseleave="this.style.borderColor='#FDE68A'" onclick="showCapPanel('${c.id}')">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;"><span style="font-size:13px;font-weight:500;">${c.name}</span>${badge(c.n+' apps','ba')}</div>
+        <div style="height:4px;background:#FEF3C7;border-radius:2px;margin-bottom:8px;overflow:hidden;"><div style="height:100%;width:${Math.min(100,c.n*22)}%;background:#D97706;border-radius:2px;"></div></div>
+        <div style="display:flex;flex-wrap:wrap;gap:4px;">${c.apps.map(a=>`<span style="font-size:11px;padding:2px 8px;background:#fff;border:1px solid #FDE68A;border-radius:20px;">${a}</span>`).join('')}</div>
+      </div>`).join('')}
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="ch">
+      <div><div class="ct">Redundancy Cluster Map</div><div class="cs">Click any cluster for full detail · validate suspected clusters to unlock the consolidation workflow</div></div>
+      <div style="display:flex;gap:6px;">
+        <button class="btn btn-sm cf-btn" id="cf-all" onclick="filterClusters('all')" style="background:#1D4ED8;color:#fff;border-color:#1D4ED8;">All (6)</button>
+        <button class="btn btn-sm cf-btn" id="cf-validated" onclick="filterClusters('validated')">Validated (3)</button>
+        <button class="btn btn-sm cf-btn" id="cf-suspected" onclick="filterClusters('suspected')">Suspected (3)</button>
+      </div>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;">
+      ${CLUSTERS.map(c=>`
+      <div class="cl-card ${c.status}" id="cl-${c.id}" onclick="showClusterPanel('${c.id}')">
+        <div style="display:flex;align-items:start;justify-content:space-between;gap:8px;margin-bottom:10px;">
+          <div style="font-size:13px;font-weight:500;color:#111827;line-height:1.3;">${c.cap}</div>
+          <span id="cl-status-${c.id}" class="badge ${c.status==='validated'?'ba':'bgr'}" style="flex-shrink:0;">${c.status==='validated'?'Validated':'Suspected'}</span>
+        </div>
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;">
+          <div style="flex:1;height:5px;background:#F3F4F6;border-radius:3px;overflow:hidden;"><div style="height:100%;width:${parseInt(c.overlap)}%;background:${c.status==='validated'?'#D97706':'#9CA3AF'};border-radius:3px;"></div></div>
+          <span style="font-size:11px;font-weight:600;color:${c.status==='validated'?'#D97706':'#6B7280'};flex-shrink:0;">${c.overlap} overlap</span>
+        </div>
+        <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:8px;">
+          <span style="font-size:14px;font-weight:600;color:#DC2626;">${c.cost}</span>
+          <span style="font-size:12px;color:#059669;font-weight:500;">save ${c.saving}</span>
+        </div>
+        <div style="display:flex;flex-wrap:wrap;gap:4px;margin-bottom:12px;">${c.apps.map(a=>`<span style="font-size:11px;padding:2px 8px;background:#F3F4F6;border-radius:20px;color:#374151;">${a}</span>`).join('')}</div>
+        <button class="btn btn-sm" id="cl-toggle-${c.id}" style="width:100%;" onclick="event.stopPropagation();toggleCluster('${c.id}')">${c.status==='validated'?'Revert to Suspected':'Validate cluster'}</button>
+      </div>`).join('')}
+    </div>
+  </div>`;
+}
+
+function renderL107(){
+  document.getElementById('topbar-title').textContent='Application Ownership & Portfolio Classification';
+  return`
+  <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:20px;">
+    <div class="kpi" style="border-left:3px solid #1D4ED8;">
+      <div class="kl">Ownership Completeness</div>
+      <div style="display:flex;align-items:baseline;gap:8px;margin:6px 0 4px;"><div class="kv">76%</div><span style="font-size:12px;color:#059669;font-weight:500;">↑ 6%</span></div>
+      <div class="kbar"><div class="kbar-f" style="width:76%;background:#1D4ED8;"></div></div>
+      <div class="kf" style="margin-top:6px;">vs last quarter · 113 of 148 apps owned</div>
+    </div>
+    <div class="kpi" style="border-left:3px solid #D97706;">
+      <div class="kl">Missing Owner</div>
+      <div style="display:flex;align-items:baseline;gap:8px;margin:6px 0 4px;"><div class="kv" style="color:#D97706;">5</div><span style="font-size:12px;color:#D97706;font-weight:500;">unassigned</span></div>
+      <div class="kbar"><div class="kbar-f" style="width:3%;background:#D97706;"></div></div>
+      <div class="kf" style="margin-top:6px;">Applications with no named owner</div>
+    </div>
+    <div class="kpi" style="border-left:3px solid #DC2626;">
+      <div class="kl">Orphaned Apps</div>
+      <div style="display:flex;align-items:baseline;gap:8px;margin:6px 0 4px;"><div class="kv" style="color:#DC2626;">2</div><span style="font-size:12px;color:#DC2626;font-weight:500;">critical</span></div>
+      <div class="kbar"><div class="kbar-f" style="width:100%;background:#DC2626;"></div></div>
+      <div class="kf" style="margin-top:6px;">Named owner has left the org</div>
+    </div>
+    <div class="kpi" style="border-left:3px solid #059669;">
+      <div class="kl">Capabilities with Owner</div>
+      <div style="display:flex;align-items:baseline;gap:8px;margin:6px 0 4px;"><div class="kv">78%</div><span style="font-size:12px;color:#6B7280;">/ 128</span></div>
+      <div class="kbar"><div class="kbar-f" style="width:78%;background:#059669;"></div></div>
+      <div class="kf" style="margin-top:6px;">5 capability nodes unassigned</div>
+    </div>
+  </div>
+
+  <div style="background:linear-gradient(135deg,#FEF2F2 0%,#FFFBEB 100%);border:1px solid #FECACA;border-radius:12px;padding:16px 20px;margin-bottom:20px;display:flex;align-items:start;gap:16px;">
+    <div style="flex-shrink:0;margin-top:2px;"><div style="width:32px;height:32px;background:#D97706;border-radius:8px;display:flex;align-items:center;justify-content:center;"><div style="width:8px;height:8px;background:white;border-radius:50%;animation:pulse 2s infinite;"></div></div></div>
+    <div style="flex:1;min-width:0;">
+      <div style="font-size:11px;font-weight:600;color:#D97706;text-transform:uppercase;letter-spacing:0.6px;margin-bottom:8px;">AI Ownership Intelligence</div>
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:16px;font-size:13px;color:#1F2937;line-height:1.6;">
+        <div><div style="font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:0.5px;color:#DC2626;margin-bottom:4px;">Orphaned — Act Now</div>Marketo and Documentum have no current owner. Both named owners departed in the last 90 days — no renewal decision-maker or support escalation path exists.</div>
+        <div><div style="font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:0.5px;color:#D97706;margin-bottom:4px;">Concentration Risk</div>David Kim owns Tableau, Power BI, and Looker — all in the same domain. Single point of accountability failure if David were to leave.</div>
+        <div><div style="font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:0.5px;color:#059669;margin-bottom:4px;">Quick Wins</div>AI can suggest owners for Zendesk, HubSpot, and Looker based on department usage patterns — each has a dominant user group that maps to a clear accountability owner.</div>
+      </div>
+    </div>
+    <button class="btn btn-sm" style="flex-shrink:0;margin-top:2px;" onclick="toggleOwnerGap()">Show gaps only</button>
+  </div>
+
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px;">
+    <div style="border:1.5px solid #FECACA;border-radius:12px;overflow:hidden;">
+      <div style="padding:14px 16px;background:#FEF2F2;display:flex;align-items:center;justify-content:space-between;">
+        <div style="display:flex;align-items:center;gap:8px;"><div style="width:8px;height:8px;border-radius:50%;background:#DC2626;"></div><span style="font-size:13px;font-weight:600;color:#DC2626;">Orphaned Applications — Owner Departed</span></div>
+        <span class="badge br">Immediate action</span>
+      </div>
+      ${[{app:'Marketo',owner:'Tom Bradley',left:'Jan 2025',crit:'Medium',days:47},{app:'Documentum',owner:'Nancy Lee',left:'Nov 2024',crit:'Low',days:120}].map((o,idx)=>`
+      <div style="padding:14px 16px;background:#fff;${idx===0?'border-bottom:1px solid #FECACA;':''}display:flex;align-items:center;justify-content:space-between;gap:12px;">
+        <div>
+          <div style="display:flex;align-items:center;gap:8px;margin-bottom:4px;"><span style="font-size:14px;font-weight:500;color:#111827;">${o.app}</span>${badge(o.crit,crit(o.crit))}</div>
+          <div style="font-size:12px;color:#6B7280;">${o.owner} departed ${o.left}</div>
+          <div style="font-size:12px;color:#DC2626;margin-top:2px;">Orphaned for ${o.days} days — no escalation path</div>
+        </div>
+        <button class="btn btn-sm" style="color:#DC2626;border-color:#FECACA;flex-shrink:0;" onclick="openTransfer('${o.app}')">Assign owner</button>
+      </div>`).join('')}
+    </div>
+
+    <div class="card">
+      <div class="ch">
+        <div><div class="ct">AI-Suggested Owners</div><div class="cs">Based on department usage concentration</div></div>
+        <span class="badge bp">3 ready</span>
+      </div>
+      ${[{app:'Zendesk',owner:'Sarah Chen',role:'Customer Success Lead',pct:'87%',dept:'Customer Success'},
+         {app:'HubSpot',owner:'Marcus Webb',role:'VP Marketing',pct:'91%',dept:'Marketing'},
+         {app:'Looker',owner:'Priya Nair',role:'Head of Product Analytics',pct:'76%',dept:'Product'}].map(s=>`
+      <div style="display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid #F9FAFB;">
+        <div class="av" style="flex-shrink:0;">${ini(s.owner)}</div>
+        <div style="flex:1;min-width:0;">
+          <div style="font-size:13px;font-weight:500;color:#111827;">${s.app} <span style="font-weight:400;color:#6B7280;">→ ${s.owner}</span></div>
+          <div style="font-size:11px;color:#9CA3AF;">${s.role} · ${s.pct} of usage from ${s.dept}</div>
+        </div>
+        <div style="display:flex;gap:5px;flex-shrink:0;">
+          <button class="btn btn-sm btn-g" onclick="const a=APPS.find(x=>x.name==='${s.app}');if(a){a.owner='${s.owner}';}toast('${s.owner} assigned to ${s.app}');this.closest('div').style.opacity='0.4';this.closest('div').style.pointerEvents='none'">Accept</button>
+          <button class="btn btn-sm" onclick="openTransfer('${s.app}')">Change</button>
+        </div>
+      </div>`).join('')}
+    </div>
+  </div>
+
+  <div class="card" style="margin-bottom:16px;">
+    <div class="ch">
+      <div><div class="ct">Application Ownership Register</div><div class="cs">Click any row to view, edit, or transfer ownership</div></div>
+      <div style="display:flex;gap:6px;">
+        <button class="btn btn-sm" id="ownergap-btn" onclick="toggleOwnerGap()">Gaps only</button>
+        <button class="btn btn-sm btn-p" onclick="openTransfer('Unassigned Application')">+ Assign owner</button>
+      </div>
+    </div>
+    <table class="dt">
+      <thead><tr><th>Application</th><th>Business Unit</th><th>Business Owner</th><th>Support Owner</th><th>Criticality</th><th></th></tr></thead>
+      <tbody>
+        ${APPS.map(a=>`<tr class="owner-row" data-owned="${!!a.owner}" style="${!a.owner?'background:#FFFBEB;':''}" onclick="showAppPanel('${a.name}')">
+          <td style="font-weight:500;">${a.name}</td>
+          <td style="color:#6B7280;">${a.bu}</td>
+          <td>${a.owner?`<div style="display:flex;align-items:center;gap:6px;"><div class="av">${ini(a.owner)}</div><span style="font-size:12px;">${a.owner}</span></div>`:badge('Unassigned','br')}</td>
+          <td style="font-size:12px;color:#374151;">${a.support||badge('Unassigned','br')}</td>
+          <td>${badge(a.crit,crit(a.crit))}</td>
+          <td onclick="event.stopPropagation()"><button class="btn btn-sm" onclick="openTransfer('${a.name}')">Transfer</button></td>
+        </tr>`).join('')}
+      </tbody>
+    </table>
+  </div>
+
+  <div class="card">
+    <div class="ch"><div><div class="ct">Ownership Completeness by Business Unit</div><div class="cs">Click a BU to filter the register above</div></div></div>
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;">
+      ${[{bu:'IT Operations',pct:97,owned:28,total:29},{bu:'Finance',pct:92,owned:11,total:12},{bu:'Sales & Marketing',pct:71,owned:10,total:14},{bu:'Data & Analytics',pct:64,owned:7,total:11},{bu:'Product',pct:55,owned:6,total:11},{bu:'Legal & Compliance',pct:38,owned:3,total:8}].map(r=>`
+      <div style="padding:14px;border:1px solid #E5E7EB;border-radius:10px;cursor:pointer;transition:all 0.15s;" onmouseenter="this.style.borderColor='#1D4ED8';this.style.background='#F8FBFF'" onmouseleave="this.style.borderColor='#E5E7EB';this.style.background=''" onclick="toast('Filtering register to '+\`${r.bu}\`)">
+        <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:8px;">
+          <span style="font-size:13px;font-weight:500;color:#111827;">${r.bu}</span>
+          <span style="font-size:18px;font-weight:300;color:${r.pct<60?'#DC2626':r.pct<80?'#D97706':'#059669'};">${r.pct}%</span>
+        </div>
+        <div class="prog" style="height:5px;margin-bottom:6px;"><div class="prog-f" style="width:${r.pct}%;background:${r.pct<60?'#DC2626':r.pct<80?'#D97706':'#059669'};"></div></div>
+        <div style="font-size:11px;color:#9CA3AF;">${r.owned} of ${r.total} apps owned</div>
+      </div>`).join('')}
+    </div>
+  </div>`;
+}
+
+function renderL108(){
+  document.getElementById('topbar-title').textContent='Navigate & Visualize Portfolio Architecture';
+  const bamData=[
+    {cap:'CRM',vals:[{v:3,apps:['Salesforce CRM','HubSpot','Zoho']},{v:0,apps:[]},{v:1,apps:['ServiceNow']},{v:0,apps:[]},{v:0,apps:[]},{v:0,apps:[]}]},
+    {cap:'Marketing Mgmt',vals:[{v:2,apps:['Marketo','HubSpot']},{v:0,apps:[]},{v:0,apps:[]},{v:0,apps:[]},{v:0,apps:[]},{v:0,apps:[]}]},
+    {cap:'Financial Reporting',vals:[{v:0,apps:[]},{v:3,apps:['SAP FI','Anaplan','Oracle']},{v:1,apps:['ServiceNow']},{v:0,apps:[]},{v:1,apps:['Tableau']},{v:0,apps:[]}]},
+    {cap:'IT Service Mgmt',vals:[{v:0,apps:[]},{v:0,apps:[]},{v:4,apps:['ServiceNow','Jira','Remedy','ZenDesk']},{v:0,apps:[]},{v:0,apps:[]},{v:0,apps:[]}]},
+    {cap:'HR Core',vals:[{v:0,apps:[]},{v:0,apps:[]},{v:1,apps:['Workday']},{v:4,apps:['Workday HCM','BambooHR','SuccessFactors','Ceridian']},{v:0,apps:[]},{v:0,apps:[]}]},
+    {cap:'Data & BI',vals:[{v:1,apps:['Tableau']},{v:1,apps:['Power BI']},{v:1,apps:['Looker']},{v:0,apps:[]},{v:4,apps:['Tableau','Power BI','Looker','Dataiku']},{v:0,apps:[]}]},
+    {cap:'Document Mgmt',vals:[{v:1,apps:['SharePoint']},{v:1,apps:['OpenText']},{v:1,apps:['SharePoint']},{v:1,apps:['Box']},{v:0,apps:[]},{v:4,apps:['SharePoint','OpenText','Box','Documentum']}]},
+  ];
+  const BUS=['Sales & Mktg','Finance','IT Ops','HR','Data & Analytics','Legal'];
+  return`
+  <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:20px;">
+    <div class="kpi" style="border-left:3px solid #1D4ED8;">
+      <div class="kl">Portfolio Entities</div>
+      <div style="display:flex;align-items:baseline;gap:8px;margin:6px 0 4px;"><div class="kv">148</div><span style="font-size:12px;color:#6B7280;">applications</span></div>
+      <div class="kbar"><div class="kbar-f" style="width:100%;background:#1D4ED8;"></div></div>
+      <div class="kf" style="margin-top:6px;">Across 128 capabilities, 6 domains</div>
+    </div>
+    <div class="kpi" style="border-left:3px solid #0D9488;">
+      <div class="kl">Viewpoints Available</div>
+      <div style="display:flex;align-items:baseline;gap:8px;margin:6px 0 4px;"><div class="kv">4</div><span style="font-size:12px;color:#6B7280;">stakeholder views</span></div>
+      <div class="kbar"><div class="kbar-f" style="width:100%;background:#0D9488;"></div></div>
+      <div class="kf" style="margin-top:6px;">Application, Capability, Tech, Investment</div>
+    </div>
+    <div class="kpi" style="border-left:3px solid #7C3AED;">
+      <div class="kl">BAM Intersections</div>
+      <div style="display:flex;align-items:baseline;gap:8px;margin:6px 0 4px;"><div class="kv">42</div><span style="font-size:12px;color:#6B7280;">active cells</span></div>
+      <div class="kbar"><div class="kbar-f" style="width:70%;background:#7C3AED;"></div></div>
+      <div class="kf" style="margin-top:6px;">Of 128 possible capability × BU pairs</div>
+    </div>
+    <div class="kpi" style="border-left:3px solid #D97706;">
+      <div class="kl">Cross-Domain Relationships</div>
+      <div style="display:flex;align-items:baseline;gap:8px;margin:6px 0 4px;"><div class="kv">312</div><span style="font-size:12px;color:#6B7280;">links mapped</span></div>
+      <div class="kbar"><div class="kbar-f" style="width:65%;background:#D97706;"></div></div>
+      <div class="kf" style="margin-top:6px;">App → capability → cost → org unit</div>
+    </div>
+  </div>
+
+  <div style="background:linear-gradient(135deg,#EFF6FF 0%,#F0FDFA 100%);border:1px solid #DBEAFE;border-radius:12px;padding:16px 20px;margin-bottom:20px;display:flex;align-items:start;gap:16px;">
+    <div style="flex-shrink:0;margin-top:2px;"><div style="width:32px;height:32px;background:#0D9488;border-radius:8px;display:flex;align-items:center;justify-content:center;"><div style="width:8px;height:8px;background:white;border-radius:50%;animation:pulse 2s infinite;"></div></div></div>
+    <div style="flex:1;min-width:0;">
+      <div style="font-size:11px;font-weight:600;color:#0D9488;text-transform:uppercase;letter-spacing:0.6px;margin-bottom:8px;">Portfolio Navigation Intelligence</div>
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:16px;font-size:13px;color:#1F2937;line-height:1.6;">
+        <div><div style="font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:0.5px;color:#1D4ED8;margin-bottom:4px;">BAM Hotspot</div>IT Operations is the most complex BU — 4 capabilities with 2+ applications. IT Service Management alone has 4 tools covering the same function.</div>
+        <div><div style="font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:0.5px;color:#D97706;margin-bottom:4px;">Coverage Gap</div>Legal & Compliance has the weakest coverage — only Document Management and Risk & Compliance are mapped, leaving governance and workflow capabilities unowned.</div>
+        <div><div style="font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:0.5px;color:#059669;margin-bottom:4px;">Search Tip</div>Use cross-domain search to traverse from any capability to its supporting applications, associated costs, and owning business units in a single query.</div>
+      </div>
+    </div>
+    <button class="btn btn-sm" style="flex-shrink:0;margin-top:2px;" onclick="document.getElementById('local-search')&&document.getElementById('local-search').focus()">Open search →</button>
+  </div>
+
+  <div style="display:grid;grid-template-columns:3fr 2fr;gap:16px;margin-bottom:16px;">
+    <div class="card">
+      <div class="ch">
+        <div><div class="ct">Business Architecture Matrix (BAM)</div><div class="cs">Capability × Organisational Unit — click any filled cell to explore the applications at that intersection</div></div>
+        <div style="display:flex;gap:8px;">
+          <select class="fsel" style="width:auto;font-size:12px;" onchange="toast('Matrix view: '+this.value)"><option>Capability × Org Unit</option><option>Application × Org Unit</option><option>Capability × Vendor</option></select>
+          <select class="fsel" style="width:auto;font-size:12px;" onchange="toast('Cells now showing: '+this.value)"><option>App count</option><option>Total TCO ($K)</option><option>Risk score</option></select>
+        </div>
+      </div>
+      <div style="overflow-x:auto;">
+        <table style="border-collapse:collapse;width:100%;">
+          <thead><tr>
+            <th style="font-size:10px;font-weight:600;color:#9CA3AF;text-align:left;padding:8px 16px 8px 0;min-width:130px;text-transform:uppercase;letter-spacing:0.5px;">Capability</th>
+            ${BUS.map(bu=>`<th style="font-size:10px;font-weight:600;color:#9CA3AF;padding:8px 6px;text-transform:uppercase;letter-spacing:0.5px;text-align:center;min-width:80px;">${bu}</th>`).join('')}
+          </tr></thead>
+          <tbody>
+            ${bamData.map(row=>`<tr style="border-top:1px solid #F9FAFB;">
+              <td style="font-size:13px;font-weight:500;color:#374151;padding:5px 16px 5px 0;">${row.cap}</td>
+              ${row.vals.map((cell,i)=>`<td style="padding:4px 6px;text-align:center;">
+                <div class="bam-c ${cell.v===0?'bc0':cell.v===1?'bc1':cell.v===2?'bc2':'bc3'}" onclick="openBamCell('${row.cap}','${BUS[i]}',${cell.v})">${cell.v===0?'—':cell.v}</div>
+              </td>`).join('')}
+            </tr>`).join('')}
+          </tbody>
+        </table>
+      </div>
+      <div style="display:flex;gap:14px;margin-top:12px;padding-top:10px;border-top:1px solid #F3F4F6;">
+        ${[{c:'bc0',l:'No apps'},{c:'bc1',l:'1 app'},{c:'bc2',l:'2 apps'},{c:'bc3',l:'3+ apps'}].map(l=>`<div style="display:flex;align-items:center;gap:5px;font-size:11px;color:#6B7280;"><div class="bam-c ${l.c}" style="width:28px;height:20px;font-size:10px;border-radius:4px;">${l.l==='No apps'?'—':''}</div>${l.l}</div>`).join('')}
+      </div>
+    </div>
+
+    <div style="display:flex;flex-direction:column;gap:16px;">
+      <div class="card">
+        <div class="ch"><div><div class="ct">Architecture Viewpoints</div><div class="cs">Generate a stakeholder-specific rendered view</div></div></div>
+        ${[{name:'Application View',for:'App Directors',icon:'A',color:'#1D4ED8',bg:'#EFF6FF',desc:'Portfolio by health, lifecycle, and ownership'},
+           {name:'Capability View',for:'Business Leaders',icon:'C',color:'#0D9488',bg:'#F0FDFA',desc:'Applications mapped to capabilities'},
+           {name:'Technology View',for:'Architects',icon:'T',color:'#7C3AED',bg:'#F5F3FF',desc:'Platforms, vendors, and dependencies'},
+           {name:'Investment View',for:'CIO & CFO',icon:'$',color:'#D97706',bg:'#FFFBEB',desc:'Cost by domain and BU'}].map(v=>`
+        <div style="display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid #F9FAFB;cursor:pointer;transition:all 0.1s;" onmouseenter="this.style.background='${v.bg}';this.style.margin='0 -20px';this.style.padding='10px 20px'" onmouseleave="this.style.background='';this.style.margin='';this.style.padding='10px 0'" onclick="generateViewpoint('${v.name}','${v.for}','${v.desc}')">
+          <div style="width:30px;height:30px;border-radius:6px;background:${v.bg};color:${v.color};border:1px solid ${v.color}33;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:12px;flex-shrink:0;">${v.icon}</div>
+          <div style="flex:1;"><div style="font-size:13px;font-weight:500;color:#111827;">${v.name}</div><div style="font-size:11px;color:#9CA3AF;">For ${v.for}</div></div>
+          <span style="font-size:12px;color:#9CA3AF;">→</span>
+        </div>`).join('')}
+      </div>
+
+      <div class="card">
+        <div class="ch"><div><div class="ct">Cross-Domain Search</div><div class="cs">Search capabilities, apps, owners</div></div></div>
+        <div style="display:flex;align-items:center;gap:8px;background:#F9FAFB;border:1px solid #E5E7EB;border-radius:8px;padding:8px 12px;margin-bottom:10px;" onclick="document.getElementById('local-search')&&document.getElementById('local-search').focus()">
+          <svg width="14" height="14" fill="none" viewBox="0 0 16 16"><circle cx="7" cy="7" r="4.5" stroke="#9CA3AF" stroke-width="1.5"/><path d="M10.5 10.5l3 3" stroke="#9CA3AF" stroke-width="1.5" stroke-linecap="round"/></svg>
+          <input type="text" id="local-search" placeholder="Try: 'Salesforce', 'Treasury', 'David Kim'..." oninput="doSearch(this.value)" style="border:none;outline:none;background:transparent;font-size:13px;font-family:inherit;color:#111827;width:100%;">
+        </div>
+        <div id="search-results"><div style="text-align:center;padding:16px;color:#9CA3AF;font-size:12px;">Start typing to search across your portfolio</div></div>
+      </div>
+    </div>
+  </div>`;
+}
+
+function renderL109(){
+  document.getElementById('topbar-title').textContent='Strategic Alignment & Investment Gap Analysis';
+  return`
+  <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:20px;">
+    <div class="kpi" style="border-left:3px solid #1D4ED8;"><div class="kl">Portfolio Alignment Score</div><div style="display:flex;align-items:baseline;gap:8px;margin:6px 0 4px;"><div class="kv">64%</div><span style="font-size:12px;color:#059669;font-weight:500;">↑ 4%</span></div><div class="kbar"><div class="kbar-f" style="width:64%;background:#1D4ED8;"></div></div><div class="kf" style="margin-top:6px;">vs last quarter</div></div>
+    <div class="kpi" style="border-left:3px solid #059669;"><div class="kl">Strategically Aligned Apps</div><div style="display:flex;align-items:baseline;gap:8px;margin:6px 0 4px;"><div class="kv">89</div><span style="font-size:12px;color:#6B7280;">/ 148</span></div><div class="kbar"><div class="kbar-f" style="width:60%;background:#059669;"></div></div><div class="kf" style="margin-top:6px;">60% of total portfolio</div></div>
+    <div class="kpi" style="border-left:3px solid #DC2626;"><div class="kl">Strategic Investment Gaps</div><div style="display:flex;align-items:baseline;gap:8px;margin:6px 0 4px;"><div class="kv" style="color:#DC2626;">7</div><span style="font-size:12px;color:#DC2626;">critical</span></div><div class="kbar"><div class="kbar-f" style="width:100%;background:#DC2626;"></div></div><div class="kf" style="margin-top:6px;">High-priority, zero coverage</div></div>
+    <div class="kpi" style="border-left:3px solid #D97706;"><div class="kl">Non-strategic Spend</div><div style="display:flex;align-items:baseline;gap:8px;margin:6px 0 4px;"><div class="kv" style="color:#D97706;">$4.2M</div></div><div class="kbar"><div class="kbar-f" style="width:35%;background:#D97706;"></div></div><div class="kf" style="margin-top:6px;">Low/no-priority capabilities</div></div>
+  </div>
+  <div style="background:linear-gradient(135deg,#EFF6FF 0%,#F5F3FF 100%);border:1px solid #DBEAFE;border-radius:12px;padding:16px 20px;margin-bottom:20px;display:flex;align-items:start;gap:16px;">
+    <div style="flex-shrink:0;margin-top:2px;"><div style="width:32px;height:32px;background:#7C3AED;border-radius:8px;display:flex;align-items:center;justify-content:center;"><div style="width:8px;height:8px;background:white;border-radius:50%;animation:pulse 2s infinite;"></div></div></div>
+    <div style="flex:1;min-width:0;">
+      <div style="font-size:11px;font-weight:600;color:#7C3AED;text-transform:uppercase;letter-spacing:0.6px;margin-bottom:8px;">AI Strategic Alignment Summary</div>
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:16px;font-size:13px;color:#1E1B4B;line-height:1.6;">
+        <div><div style="font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:0.5px;color:#059669;margin-bottom:4px;">Well Aligned</div>Digital CX and Operational Excellence are strongly supported — CRM, ITSM, and AppDev tooling deliver 71–78% alignment scores.</div>
+        <div><div style="font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:0.5px;color:#DC2626;margin-bottom:4px;">Investment Gap</div>Data-Driven Decisions is a High priority but receives only $1.4M — 62% below average. Master Data Management has zero coverage.</div>
+        <div><div style="font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:0.5px;color:#D97706;margin-bottom:4px;">Over-Invested</div>Document Management receives $640K against a Low priority. Four overlapping tools suggest a $220K consolidation opportunity.</div>
+      </div>
+    </div>
+    <button class="btn btn-sm" style="flex-shrink:0;color:#7C3AED;border-color:#C4B5FD;margin-top:2px;" onclick="copyNarrative()">Copy for board pack</button>
+  </div>
+  <div style="display:grid;grid-template-columns:1fr 340px;gap:16px;align-items:start;">
+    <div style="display:flex;flex-direction:column;gap:16px;">
+      <div class="card">
+        <div class="ch">
+          <div><div class="ct">Investment vs Strategic Priority</div><div class="cs">Click any row to drill in · rows highlighted in amber/red need attention</div></div>
+          <div style="display:flex;gap:6px;">
+            <button class="btn btn-sm" id="sort-priority" onclick="sortAlign('priority')" style="background:#1D4ED8;color:#fff;border-color:#1D4ED8;">Priority</button>
+            <button class="btn btn-sm" id="sort-score" onclick="sortAlign('score')">Score</button>
+            <button class="btn btn-sm" id="sort-spend" onclick="sortAlign('spend')">Spend</button>
+          </div>
+        </div>
+        <div style="display:grid;grid-template-columns:220px 76px 1fr 76px 52px 32px;gap:10px;padding:0 12px 8px;border-bottom:1px solid #F3F4F6;margin-bottom:4px;">
+          ${['Capability Area','Priority','Alignment','Spend','Apps',''].map(h=>`<div style="font-size:10px;font-weight:600;color:#9CA3AF;text-transform:uppercase;letter-spacing:0.5px;">${h}</div>`).join('')}
+        </div>
+        <div id="align-rows"></div>
+        <div style="display:flex;align-items:center;gap:14px;margin-top:10px;padding-top:10px;border-top:1px solid #F3F4F6;flex-wrap:wrap;">
+          ${[{dot:'#059669',l:'Well aligned (≥70%)'},{dot:'#D97706',l:'Partial (45–69%)'},{dot:'#DC2626',l:'Misaligned (<45%) or gap'}].map(l=>`<div style="display:flex;align-items:center;gap:5px;font-size:11px;color:#6B7280;"><div style="width:8px;height:8px;border-radius:50%;background:${l.dot};"></div>${l.l}</div>`).join('')}
+        </div>
+      </div>
+      <div class="card">
+        <div class="ch">
+          <div><div class="ct">Application-to-Strategic-Objective Mapping</div><div class="cs">Click an objective to view aligned apps and drill into gaps · click + to add a mapping</div></div>
+          <button class="btn btn-sm btn-p" onclick="openModal('okr-modal')">+ Map application</button>
+        </div>
+        <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;">
+          ${OBJECTIVES.map(o=>{const pct=Math.round(o.aligned/(o.aligned+o.gap+0.5)*100);const bc=pct>=70?'#059669':pct>=50?'#D97706':'#DC2626';return`
+          <div style="padding:12px;border:1px solid #F3F4F6;border-radius:10px;cursor:pointer;transition:all 0.15s;" onmouseenter="this.style.borderColor='#1D4ED8';this.style.boxShadow='0 2px 8px rgba(29,78,216,0.08)'" onmouseleave="this.style.borderColor='#F3F4F6';this.style.boxShadow=''" onclick="showAlignPanel(${JSON.stringify(o)})">
+            <div style="display:flex;align-items:start;justify-content:space-between;gap:4px;margin-bottom:8px;"><div style="font-size:12px;font-weight:500;color:#111827;line-height:1.3;">${o.name}</div>${badge(o.priority,prio(o.priority))}</div>
+            <div style="height:4px;background:#F3F4F6;border-radius:2px;margin-bottom:8px;overflow:hidden;"><div style="height:100%;width:${pct}%;background:${bc};border-radius:2px;"></div></div>
+            <div style="display:flex;justify-content:space-between;font-size:11px;color:#6B7280;"><span style="color:${bc};font-weight:500;">${pct}% aligned</span><span>${o.aligned} apps · ${o.gap} gap${o.gap!==1?'s':''}</span></div>
+            <div style="font-size:11px;color:#9CA3AF;margin-top:2px;">${o.spend}</div>
+          </div>`;}).join('')}
+        </div>
+      </div>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:12px;">
+      <div class="card" style="padding:16px;">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:4px;"><div class="ct">Business Value Score</div><button class="btn btn-sm btn-p" onclick="updateWeight('w1','d-blue',document.getElementById('sr-w1').value);toast('Scores recalculated for 148 applications')">Recalculate</button></div>
+        <div style="font-size:12px;color:#6B7280;margin-bottom:14px;">Drag to adjust dimension weights</div>
+        <div style="position:relative;width:96px;height:96px;margin:0 auto 16px;">
+          <svg width="96" height="96" viewBox="0 0 96 96">
+            <circle cx="48" cy="48" r="38" fill="none" stroke="#F3F4F6" stroke-width="10"/>
+            <circle id="d-blue" cx="48" cy="48" r="38" fill="none" stroke="#1D4ED8" stroke-width="10" stroke-dasharray="84 155" stroke-dashoffset="0" transform="rotate(-90 48 48)" style="transition:all 0.4s;"/>
+            <circle id="d-red"  cx="48" cy="48" r="38" fill="none" stroke="#DC2626" stroke-width="10" stroke-dasharray="60 179" stroke-dashoffset="-84" transform="rotate(-90 48 48)" style="transition:all 0.4s;"/>
+            <circle id="d-teal" cx="48" cy="48" r="38" fill="none" stroke="#0D9488" stroke-width="10" stroke-dasharray="48 191" stroke-dashoffset="-144" transform="rotate(-90 48 48)" style="transition:all 0.4s;"/>
+            <circle id="d-amber"cx="48" cy="48" r="38" fill="none" stroke="#D97706" stroke-width="10" stroke-dasharray="48 191" stroke-dashoffset="-192" transform="rotate(-90 48 48)" style="transition:all 0.4s;"/>
+            <text id="donut-total" x="48" y="46" text-anchor="middle" style="font-size:13px;font-weight:600;fill:#111827;font-family:Geist,sans-serif;">100%</text>
+            <text x="48" y="58" text-anchor="middle" style="font-size:9px;fill:#9CA3AF;font-family:Geist,sans-serif;">total weight</text>
+          </svg>
+        </div>
+        ${[{dim:'Strategic Alignment',w:35,color:'#1D4ED8',id:'w1',did:'d-blue'},{dim:'Business Criticality',w:25,color:'#DC2626',id:'w2',did:'d-red'},{dim:'User Satisfaction',w:20,color:'#0D9488',id:'w3',did:'d-teal'},{dim:'Technical Health',w:20,color:'#D97706',id:'w4',did:'d-amber'}].map(d=>`
+        <div style="margin-bottom:12px;">
+          <div style="display:flex;justify-content:space-between;align-items:center;font-size:12px;margin-bottom:5px;">
+            <div style="display:flex;align-items:center;gap:6px;"><div style="width:8px;height:8px;border-radius:50%;background:${d.color};flex-shrink:0;"></div><span style="color:#374151;font-weight:500;">${d.dim}</span></div>
+            <span style="font-weight:600;color:${d.color};min-width:32px;text-align:right;" id="${d.id}">${d.w}%</span>
+          </div>
+          <input type="range" id="sr-${d.id}" min="5" max="60" value="${d.w}" step="5" style="width:100%;" oninput="updateWeight('${d.id}','${d.did}',this.value)">
+        </div>`).join('')}
+      </div>
+      <div class="card" style="padding:16px;">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;">
+          <div class="ct">Applications by Value Score</div>
+          <div style="display:flex;gap:4px;">
+            <button class="btn btn-sm" id="show-top" onclick="toggleAppList('top')" style="background:#1D4ED8;color:#fff;border-color:#1D4ED8;font-size:11px;padding:4px 8px;">Top 6</button>
+            <button class="btn btn-sm" id="show-bot" onclick="toggleAppList('bot')" style="font-size:11px;padding:4px 8px;">Bottom 6</button>
+          </div>
+        </div>
+        <div id="app-score-list"></div>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
+        <button class="btn" style="flex-direction:column;align-items:start;padding:12px;height:auto;gap:2px;" onclick="openModal('invest-modal')">
+          <span style="font-size:12px;font-weight:600;color:#111827;">Plan investment</span>
+          <span style="font-size:11px;color:#9CA3AF;font-weight:400;">Fill 7 strategic gaps</span>
+        </button>
+        <button class="btn" style="flex-direction:column;align-items:start;padding:12px;height:auto;gap:2px;" onclick="openExportModal()">
+          <span style="font-size:12px;font-weight:600;color:#111827;">Export report</span>
+          <span style="font-size:11px;color:#9CA3AF;font-weight:400;">Board-ready PDF</span>
+        </button>
+      </div>
+    </div>
+  </div>`;
+}
+
+// ─── MAIN ─────────────────────────────────────────────────────────────────
+function render(){
+  const p=document.getElementById('page');
+  const renders={'05':renderL105,'06':renderL106,'07':renderL107,'08':renderL108,'09':renderL109};
+  p.innerHTML=(renders[currentL1]||renderL105)();
+  // Post-render inits
+  if(currentL1==='09'){renderAlignRows(ALIGN_DATA);toggleAppList('top');}
+  if(currentL1==='05'){updateModelPreview();}
+}
+
+document.getElementById('nl05').classList.add('active');
+updateModelPreview();
+render();
+</script>
+</body>
+</html>
